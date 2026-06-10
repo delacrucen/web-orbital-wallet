@@ -5,6 +5,14 @@ import { BRAND_RGB } from "../branding/colors";
 import { clamp } from "../lib/lerp";
 import { scrollState } from "../scroll/scrollStore";
 
+/* Brand wash over the hero video — a solid brand tint (not a gradient).
+   Toggle the default by switching .primary ↔ .secondary below. */
+const WASH = {
+  primary: `rgba(${BRAND_RGB.primary}, 0.4)`,
+  secondary: `rgba(${BRAND_RGB.secondary}, 0.4)`,
+};
+const WASH_COLOR = WASH.primary; // ← switch to WASH.secondary to toggle
+
 /**
  * Fixed background layer behind the canvas (z-0). The phone canvas (z-10)
  * renders over this; marketing copy (z-20) sits over both. Sections stay
@@ -59,17 +67,18 @@ export function Background() {
         />
         {/* Black darkening layer — raise the alpha (bg-black/NN) to dim the video. */}
         <div className="absolute inset-0 bg-black/80" />
-        {/* Fullscreen brand wash over the video — app palette, single source of
-            truth in branding/colors.ts (primary → secondary). Tune the alpha. */}
+        {/* Fullscreen brand wash over the video — solid brand tint
+            (toggle primary/secondary via WASH_COLOR up top). */}
         <div
           className="absolute inset-0"
-          style={{
-            backgroundImage: `linear-gradient(to bottom, rgba(${BRAND_RGB.primary}, 0.5), rgba(${BRAND_RGB.secondary}, 0.5))`,
-          }}
+          style={{ backgroundColor: WASH_COLOR }}
         />
-        {/* Gradient overlay: red brand glow up top, melting to black at the
-            bottom so the hero blends into the dark feature sections. */}
-        <div className="absolute inset-0 bg-[radial-gradient(110%_70%_at_50%_-15%,rgba(176,40,40,0.45)_0%,rgba(42,13,16,0.25)_38%,rgba(5,5,10,0)_70%),linear-gradient(180deg,rgba(5,5,10,0.55)_0%,rgba(5,5,10,0)_28%,rgba(5,5,10,0.92)_100%)]" />
+        {/* Top brand glow — its own layer so it's easy to tweak/remove. */}
+        <div className="absolute inset-0 bg-[radial-gradient(110%_70%_at_50%_-15%,rgba(176,40,40,0.4)_0%,rgba(42,13,16,0.22)_38%,rgba(5,5,10,0)_70%)]" />
+        {/* Bottom-only fade: the top + middle stay uniform (covered by the black
+            + brand layers above); only the lower portion darkens to blend into
+            the dark feature sections. Raise the start % to push the fade lower. */}
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_0%,transparent_55%,rgba(5,5,10,0.96)_100%)]" />
       </div>
     </div>
   );
