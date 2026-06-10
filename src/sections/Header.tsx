@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+import logoUrl from "../assets/images/logos/ow-extended.webp";
+
 /**
  * Morphing top navigation.
  *
@@ -26,14 +28,6 @@ const NAV = [
 
 /** Pixels scrolled before the bar morphs. Normalizes again on the way back to 0. */
 const MORPH_AT = 8;
-
-function Mark() {
-  return (
-    <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full border border-white/40">
-      <span className="block h-3.5 w-3.5 rotate-45 rounded-full border border-white/70" />
-    </span>
-  );
-}
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -68,19 +62,15 @@ export function Header() {
             : "max-w-full rounded-[2rem] border-transparent bg-transparent px-4 py-1 shadow-none backdrop-blur-0"
         }`}
       >
-        {/* Brand — wordmark collapses to just the mark once morphed. */}
-        <a
-          href="#top"
-          className="flex items-center gap-2 text-lg font-semibold tracking-tight text-white"
-        >
-          <Mark />
-          <span
-            className={`inline-block overflow-hidden whitespace-nowrap transition-all duration-500 ease-out motion-reduce:transition-none ${
-              scrolled ? "max-w-0 opacity-0" : "max-w-[8rem] opacity-100"
+        {/* Brand wordmark — shrinks slightly once the bar morphs. */}
+        <a href="#top" className="flex items-center" aria-label="Orbital Wallet">
+          <img
+            src={logoUrl}
+            alt="Orbital Wallet"
+            className={`w-auto transition-all duration-500 ease-out motion-reduce:transition-none ${
+              scrolled ? "h-6" : "h-8"
             }`}
-          >
-            Orbital
-          </span>
+          />
         </a>
 
         {/* Links — centered between brand and CTA. */}
