@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import logoUrl from "../assets/images/logos/ow-extended.webp";
+import logoUrl from "../assets/images/logos/ow-white.webp";
 
 /**
  * Morphing top navigation.
@@ -58,12 +58,16 @@ export function Header() {
       <nav
         className={`flex w-full items-center justify-between gap-4 border transition-all duration-500 ease-out motion-reduce:transition-none ${
           scrolled
-            ? "max-w-6xl rounded-full border-white/10 bg-white/10 px-5 py-2.5 shadow-2xl shadow-black/40 backdrop-blur-xl"
-            : "max-w-full rounded-[2rem] border-transparent bg-transparent px-4 py-1 shadow-none backdrop-blur-0"
+            ? "max-w-6xl rounded-full border-white/10 bg-white/10 px-5 py-2.5 backdrop-blur-xl"
+            : "max-w-full rounded-4xl border-transparent bg-transparent px-4 py-1 backdrop-blur-0"
         }`}
       >
         {/* Brand wordmark — shrinks slightly once the bar morphs. */}
-        <a href="#top" className="flex items-center" aria-label="Orbital Wallet">
+        <a
+          href="#top"
+          className="flex items-center"
+          aria-label="Orbital Wallet"
+        >
           <img
             src={logoUrl}
             alt="Orbital Wallet"

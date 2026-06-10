@@ -6,42 +6,25 @@ import { motion, useReducedMotion, type Variants } from "motion/react";
  * The copy staggers in (slide from its side + blur) when the section enters view
  * and animates back out when it leaves — entrance/exit on every pass.
  *
- * Hierarchy, top → bottom: a small kicker tag, a two-line headline (sans lead +
- * serif italic emphasis as the focal point), a muted body line, scannable
- * highlight chips, and a quiet CTA.
+ * Three stacked lines: `lead` names the service, the serif italic `emphasis` is
+ * the focal "hero" word, and `body` is the full description.
  */
 export interface FeatureProps {
   id: string;
-  /** Small uppercase eyebrow tag above the headline. */
-  kicker: string;
   lead: string;
   emphasis: string;
   body: string;
-  /** Short scannable tags shown as chips under the body. */
-  highlights?: string[];
-  /** CTA label. Defaults to "Conocé más". */
-  cta?: string;
   /** Side the text sits on. Phone goes to the opposite side. */
   side: "left" | "right";
 }
 
-export function Feature({
-  id,
-  kicker,
-  lead,
-  emphasis,
-  body,
-  highlights,
-  cta = "Conocé más",
-  side,
-}: FeatureProps) {
+export function Feature({ id, lead, emphasis, body, side }: FeatureProps) {
   const reduce = useReducedMotion();
-  const right = side === "right";
-  const fromX = right ? 48 : -48;
+  const fromX = side === "right" ? 48 : -48;
 
   const container: Variants = {
     hidden: {},
-    show: { transition: { staggerChildren: 0.1, delayChildren: 0.05 } },
+    show: { transition: { staggerChildren: 0.12, delayChildren: 0.05 } },
   };
   const item: Variants = reduce
     ? {
@@ -76,68 +59,29 @@ export function Feature({
           whileInView="show"
           viewport={{ once: false, amount: 0.5 }}
           className={
-            right
-              ? "ml-auto flex max-w-lg flex-col items-end text-right"
-              : "mr-auto flex max-w-lg flex-col items-start text-left"
+            side === "right"
+              ? "ml-auto max-w-md text-right"
+              : "mr-auto max-w-md text-left"
           }
         >
-          {/* Kicker tag */}
-          <motion.span
-            variants={item}
-            className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs font-medium uppercase tracking-[0.18em] text-white/70 backdrop-blur-sm"
-          >
-            <span className="h-1.5 w-1.5 rounded-full bg-linear-to-br from-brand-primary to-brand-secondary" />
-            {kicker}
-          </motion.span>
-
-          {/* Headline — sans lead + serif italic focal word. */}
-          <motion.h2 variants={item} className="mt-5">
-            <span className="block text-xl font-medium tracking-tight text-white/90 md:text-2xl">
-              {lead}
-            </span>
-            <span className="-mt-1 block bg-linear-to-r from-brand-primary to-brand-secondary bg-clip-text pb-[0.12em] font-serif text-6xl font-bold italic leading-[1.1] text-transparent md:text-7xl">
-              {emphasis}
-            </span>
-          </motion.h2>
-
-          {/* Body */}
           <motion.p
             variants={item}
-            className="mt-5 max-w-sm text-base leading-relaxed text-white/55 md:text-lg"
+            className="text-2xl font-medium tracking-tight text-white md:text-3xl"
+          >
+            {lead}
+          </motion.p>
+          <motion.h2
+            variants={item}
+            className="-mt-1 bg-linear-to-r from-brand-primary to-brand-secondary bg-clip-text pb-[0.12em] font-serif text-5xl font-bold italic leading-[1.1] text-transparent md:text-6xl"
+          >
+            {emphasis}
+          </motion.h2>
+          <motion.p
+            variants={item}
+            className="mt-4 leading-relaxed text-white/60"
           >
             {body}
           </motion.p>
-
-          {/* Highlight chips */}
-          {highlights && highlights.length > 0 && (
-            <motion.ul
-              variants={item}
-              className={`mt-7 flex flex-wrap gap-2 ${
-                right ? "justify-end" : "justify-start"
-              }`}
-            >
-              {highlights.map((h) => (
-                <li
-                  key={h}
-                  className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-sm text-white/75"
-                >
-                  {h}
-                </li>
-              ))}
-            </motion.ul>
-          )}
-
-          {/* CTA */}
-          <motion.a
-            variants={item}
-            href={`#${id}`}
-            className="group mt-8 inline-flex items-center gap-1.5 text-sm font-semibold text-white transition-colors hover:text-brand-secondary"
-          >
-            {cta}
-            <span className="transition-transform duration-300 group-hover:translate-x-1">
-              →
-            </span>
-          </motion.a>
         </motion.div>
       </div>
     </section>

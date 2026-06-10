@@ -47,29 +47,23 @@ function Landing() {
         <Hero />
         <Feature
           id="funciones"
-          kicker="Transferencias"
           lead="Mové tu dinero"
           emphasis="Sin Fricción"
           body="Enviá y recibí transferencias bancarias al instante, los siete días, a cualquier hora."
-          highlights={["24/7", "Acreditación inmediata", "Sin comisiones"]}
           side="right"
         />
         <Feature
           id="qr"
-          kicker="Pagos con QR"
           lead="Pagá en segundos"
           emphasis="Solo Escaneá"
           body="Apuntá la cámara, confirmá el monto y listo. Pagar en comercios nunca fue tan rápido."
-          highlights={["Escaneá", "Confirmá", "Listo"]}
           side="left"
         />
         <Feature
           id="todo"
-          kicker="Servicios"
           lead="Gestioná todo desde"
           emphasis="Un Solo Lugar"
           body="Luz, agua, internet y todas tus cuentas, pagadas y al día sin salir de la app."
-          highlights={["Luz", "Agua", "Internet", "y más"]}
           side="right"
         />
       </main>
