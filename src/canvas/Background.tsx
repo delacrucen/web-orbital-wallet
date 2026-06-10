@@ -52,7 +52,7 @@ export function Background() {
   return (
     <div
       aria-hidden
-      className="pointer-events-none fixed inset-0 -z-10 bg-[#05050a]"
+      className="pointer-events-none fixed inset-0 -z-10 bg-base"
     >
       <div ref={fadeRef} className="absolute inset-0">
         <video
@@ -73,12 +73,18 @@ export function Background() {
           className="absolute inset-0"
           style={{ backgroundColor: WASH_COLOR }}
         />
-        {/* Top brand glow — its own layer so it's easy to tweak/remove. */}
-        <div className="absolute inset-0 bg-[radial-gradient(110%_70%_at_50%_-15%,rgba(176,40,40,0.4)_0%,rgba(42,13,16,0.22)_38%,rgba(5,5,10,0)_70%)]" />
+        {/* Top brand glow — its own layer so it's easy to tweak/remove. Brand
+            primary, sourced from branding/colors.ts. */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background: `radial-gradient(110% 70% at 50% -15%, rgba(${BRAND_RGB.primary}, 0.4) 0%, rgba(${BRAND_RGB.primary}, 0.16) 38%, transparent 70%)`,
+          }}
+        />
         {/* Bottom-only fade: the top + middle stay uniform (covered by the black
             + brand layers above); only the lower portion darkens to blend into
             the dark feature sections. Raise the start % to push the fade lower. */}
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_0%,transparent_55%,rgba(5,5,10,0.96)_100%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_0%,transparent_55%,var(--color-base)_100%)]" />
       </div>
     </div>
   );

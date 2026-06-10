@@ -1,6 +1,10 @@
 /**
  * Orbital brand colors, mirrored from the app (`app-orbital-wallet` ·
  * src/utils/colors.ts). Keep in sync if the brand palette changes there.
+ *
+ * For Tailwind classes use the matching theme tokens (`brand-primary`,
+ * `brand-secondary`) defined in src/styles.css `@theme` — same values as here.
+ * Use these constants for JS / three.js / inline rgba.
  */
 
 export const BRAND = {

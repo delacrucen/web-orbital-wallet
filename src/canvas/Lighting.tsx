@@ -1,5 +1,7 @@
 import { Environment, Lightformer } from '@react-three/drei'
 
+import { BRAND } from '../branding/colors'
+
 /**
  * Self-contained studio environment built from Lightformers — no HDR download,
  * so it can't stall first paint and works offline. The rect "softboxes" become
@@ -34,7 +36,7 @@ export function Lighting() {
           intensity={2.2}
           position={[5, -1, 2]}
           scale={[6, 10, 1]}
-          color="#ff5a5f"
+          color={BRAND.primary}
         />
         {/* Back ring for edge separation */}
         <Lightformer
@@ -48,7 +50,7 @@ export function Lighting() {
 
       <ambientLight intensity={0.3} />
       <directionalLight position={[4, 6, 6]} intensity={1.8} />
-      <directionalLight position={[-6, 2, -4]} intensity={0.5} color="#ff5a5f" />
+      <directionalLight position={[-6, 2, -4]} intensity={0.5} color={BRAND.primary} />
     </>
   )
 }

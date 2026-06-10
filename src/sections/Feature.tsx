@@ -69,7 +69,7 @@ export function Feature({ id, lead, emphasis, body, side }: FeatureProps) {
           </motion.p>
           <motion.h2
             variants={item}
-            className="bg-linear-to-r from-[#ff7a7a] to-[#e03e3e] bg-clip-text font-serif text-5xl italic text-transparent md:text-6xl"
+            className="bg-linear-to-r from-brand-primary to-brand-secondary bg-clip-text font-serif text-5xl italic text-transparent md:text-6xl"
           >
             {emphasis}
           </motion.h2>
