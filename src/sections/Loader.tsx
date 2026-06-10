@@ -107,7 +107,7 @@ export function Loader() {
       role="progressbar"
       aria-label="Cargando"
       aria-hidden={leaving}
-      className={`fixed inset-0 z-[100] flex flex-col items-center justify-center bg-base transition-opacity duration-[650ms] ease-out motion-reduce:transition-none ${
+      className={`fixed inset-0 z-[100] flex flex-col items-center justify-center bg-surface transition-opacity duration-[650ms] ease-out motion-reduce:transition-none ${
         leaving ? 'pointer-events-none opacity-0' : 'opacity-100'
       }`}
     >

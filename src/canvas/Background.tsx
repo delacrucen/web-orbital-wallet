@@ -52,7 +52,7 @@ export function Background() {
   return (
     <div
       aria-hidden
-      className="pointer-events-none fixed inset-0 -z-10 bg-base"
+      className="pointer-events-none fixed inset-0 -z-10 bg-surface"
     >
       <div ref={fadeRef} className="absolute inset-0">
         <video
@@ -84,7 +84,7 @@ export function Background() {
         {/* Bottom-only fade: the top + middle stay uniform (covered by the black
             + brand layers above); only the lower portion darkens to blend into
             the dark feature sections. Raise the start % to push the fade lower. */}
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_0%,transparent_55%,var(--color-base)_100%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_0%,transparent_55%,var(--color-surface)_100%)]" />
       </div>
     </div>
   );
