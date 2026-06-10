@@ -3,6 +3,7 @@ import { Canvas } from '@react-three/fiber'
 
 import { Lighting } from './Lighting'
 import { Phone } from './Phone'
+import { Starfield } from './Starfield'
 
 /**
  * The single, fixed, full-screen canvas. Never unmounts for the life of the
@@ -17,6 +18,10 @@ export function Scene() {
       camera={{ position: [0, 0, 12], fov: 35 }}
       aria-hidden
     >
+      {/* Starfield sits outside Suspense — it has nothing to load and should
+          render immediately behind the phone. */}
+      <Starfield />
+
       <Suspense fallback={null}>
         <Lighting />
         <Phone />
