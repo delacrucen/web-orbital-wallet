@@ -14,7 +14,7 @@ import { clamp, lerp } from "../lib/lerp";
 import { pointerState, scrollState } from "../scroll/scrollStore";
 
 /* ---- tunables ------------------------------------------------------------ */
-const STAR_COUNT = 3000;
+const STAR_COUNT = 6000;
 /** Half-extents of the star volume (world units); z spans near→far behind phone. */
 const FIELD = { x: 30, y: 22, zNear: -2, zFar: -34 };
 /** Base star size in world units (per-star scale varies on top). */
@@ -22,9 +22,9 @@ const BASE_SIZE = 0.055;
 /** How far the field shifts with the pointer (depth-scaled per star). */
 const POINTER_STRENGTH = 0.6;
 /** Vertical drift (world units) across the whole page scroll (depth-scaled). */
-const SCROLL_PARALLAX = 5;
+const SCROLL_PARALLAX = 50;
 /** Peak star brightness (0–1). Lower = calmer, less distracting. */
-const STAR_BRIGHTNESS = 0.4;
+const STAR_BRIGHTNESS = 0.3;
 /* -------------------------------------------------------------------------- */
 
 const vertexShader = /* glsl */ `
