@@ -19,3 +19,26 @@ export const pointerState = {
   /** Normalized pointer Y, -1 (top) → 1 (bottom). */
   y: 0,
 }
+
+/**
+ * Pinch-to-zoom multiplier on the phone (touch only). 1 = base. Clamped to a
+ * safe ceiling so the app-screen textures never zoom past their native
+ * resolution and reveal pixelation. Written by `usePinchZoom`, read in the
+ * render loop and eased onto the phone scale.
+ */
+export const pinchState = {
+  scale: 1,
+}
+
+/**
+ * Viewport layout mode, read by the render loop to pick the phone choreography.
+ * Plain mutable (not React state) — a matchMedia listener (`useLayoutMode`) keeps
+ * it in sync; DOM layout itself is handled by Tailwind responsive classes.
+ */
+export const layoutState = {
+  /** Narrow viewport (phones): stacked, phone-centered choreography. */
+  mobile:
+    typeof window !== 'undefined'
+      ? window.matchMedia('(max-width: 768px)').matches
+      : false,
+}
