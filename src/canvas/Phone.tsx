@@ -14,8 +14,13 @@ import {
   type Texture,
 } from 'three'
 
-import { PHONE, SCREENS } from '../config/choreography'
-import { lerp, clamp } from '../lib/lerp'
+import {
+  PHONE,
+  SCREEN_SEQUENCE,
+  samplePhone,
+  sampleSegment,
+} from '../config/choreography'
+import { lerp } from '../lib/lerp'
 import { scrollState, pointerState } from '../scroll/scrollStore'
 
 const MODEL_URL = '/models/iphone.glb'
@@ -116,20 +121,23 @@ function makeGlareMaterial() {
 }
 
 /**
- * The persistent phone. Loaded once, never unmounts. The app screenshot is
+ * The persistent phone. Loaded once, never unmounts. The app screenshots are
  * painted onto the model's own screen mesh (perfect rounded corners), kept crisp
- * (unlit), with a subtle additive glare overlay for premium glass feel.
+ * (unlit). Two stacked screen layers crossfade home → feature1/2/3 across the
+ * sections; a subtle additive glare overlay adds the premium glass feel.
  */
 export function Phone() {
   const group = useRef<Group>(null)
+  const baseMat = useRef<MeshBasicMaterial | null>(null)
+  const overlayMat = useRef<MeshBasicMaterial | null>(null)
   const glareMat = useRef<ShaderMaterial | null>(null)
-  const { scene } = useGLTF(MODEL_URL, true)
-  const screen = useTexture(SCREENS.home, (t) => {
-    t.colorSpace = SRGBColorSpace
-    t.anisotropy = 8
-  })
+  const screens = useRef<Texture[]>([])
 
-  // Green-screen: paint the app onto the model's screen mesh + add the glare.
+  const { scene } = useGLTF(MODEL_URL, true)
+  const textures = useTexture(SCREEN_SEQUENCE)
+
+  // Green-screen: paint the app onto the model's screen mesh, plus the crossfade
+  // overlay and glare layers (added once).
   useLayoutEffect(() => {
     let screenMesh: Mesh | undefined
     scene.traverse((o) => {
@@ -141,50 +149,90 @@ export function Phone() {
     if (!screenMesh) return
 
     const aspect = regeneratePlanarUVs(screenMesh)
-    applyCoverFit(screen, aspect)
+    for (const t of textures) {
+      t.colorSpace = SRGBColorSpace
+      t.anisotropy = 8
+      applyCoverFit(t, aspect)
+    }
+    screens.current = textures
 
-    // Crisp, unlit display (the look that read cleanest).
+    // Base layer: crisp, unlit display (the look that read cleanest).
     let mat = screenMesh.material as MeshBasicMaterial
     if (!mat.userData?.__appScreen) {
       ;(mat as { dispose?: () => void }).dispose?.()
-      mat = new MeshBasicMaterial({
-        toneMapped: false,
-        name: SCREEN_MATERIAL, // keep findable for Phase 3 screen swaps
-      })
+      mat = new MeshBasicMaterial({ toneMapped: false, name: SCREEN_MATERIAL })
       mat.userData.__appScreen = true
       screenMesh.material = mat
     }
-    mat.map = screen
+    mat.map = textures[0]
     mat.needsUpdate = true
+    baseMat.current = mat
 
-    // Glare overlay: a sibling mesh sharing the screen's rounded geometry,
-    // floated a hair in front. Added once.
-    if (!screenMesh.userData.__glareAdded) {
+    if (!screenMesh.userData.__screenSetup) {
+      // Crossfade overlay: same rounded geometry, floated a hair in front, its
+      // opacity ramped by section progress to dissolve to the next screen.
+      const overlay = new MeshBasicMaterial({
+        toneMapped: false,
+        transparent: true,
+        opacity: 0,
+        depthWrite: false,
+      })
+      const overlayMesh = new Mesh(screenMesh.geometry.clone(), overlay)
+      overlayMesh.position.z += 0.002
+      overlayMesh.renderOrder = 1
+      screenMesh.parent?.add(overlayMesh)
+      overlayMat.current = overlay
+
+      // Glass glare on top.
       const glareMaterial = makeGlareMaterial()
       const glare = new Mesh(screenMesh.geometry.clone(), glareMaterial)
       glare.position.z += 0.004
       glare.renderOrder = 2
       screenMesh.parent?.add(glare)
-      screenMesh.userData.__glareAdded = true
       glareMat.current = glareMaterial
+
+      screenMesh.userData.__screenSetup = true
     }
-  }, [scene, screen])
+  }, [scene, textures])
 
   useFrame(() => {
     const g = group.current
     if (!g) return
 
-    // Gentle rise into its resting frame across the hero (first quarter).
-    const rise = clamp(scrollState.progress / 0.25)
-    const targetY = lerp(-1.4, -0.2, rise)
+    // Scroll sets the target pose; the render loop eases toward it (golden rule).
+    const pose = samplePhone(scrollState.progress)
 
-    // Eased pointer parallax on top of any base rotation.
-    const targetRotY = pointerState.x * 0.28
-    const targetRotX = -pointerState.y * 0.16
+    // Eased pointer parallax layered on top of the scroll-driven rotation.
+    const rotY = pose.rotY + pointerState.x * 0.15
+    const rotX = -pointerState.y * 0.1
 
-    g.position.y = lerp(g.position.y, targetY, 0.08)
-    g.rotation.y = lerp(g.rotation.y, targetRotY, 0.07)
-    g.rotation.x = lerp(g.rotation.x, targetRotX, 0.07)
+    g.position.x = lerp(g.position.x, pose.x, 0.08)
+    g.position.y = lerp(g.position.y, pose.y, 0.08)
+    g.rotation.y = lerp(g.rotation.y, rotY, 0.07)
+    g.rotation.x = lerp(g.rotation.x, rotX, 0.07)
+
+    const targetScale = PHONE.scale * pose.scale
+    g.scale.setScalar(lerp(g.scale.x, targetScale, 0.08))
+
+    // Crossfade the screen: base = current section's screen, overlay = next,
+    // overlay opacity = smoothstepped progress through the segment.
+    const tex = screens.current
+    const bm = baseMat.current
+    const om = overlayMat.current
+    if (tex.length && bm && om) {
+      const { index, t } = sampleSegment(scrollState.progress)
+      const a = tex[index]
+      const b = tex[index + 1]
+      if (bm.map !== a) {
+        bm.map = a
+        bm.needsUpdate = true
+      }
+      if (om.map !== b) {
+        om.map = b
+        om.needsUpdate = true
+      }
+      om.opacity = t * t * (3 - 2 * t)
+    }
 
     // Drive the glare from pointer: invisible centered, sweeps in at angles.
     const gm = glareMat.current
@@ -197,11 +245,15 @@ export function Phone() {
     }
   })
 
+  // Initial pose sits low + slightly small so it eases UP into the hero on load.
   return (
-    <group ref={group} position={[0, -1.4, 0]} scale={PHONE.scale}>
+    <group ref={group} position={[0, -2.8, 0]} scale={PHONE.scale * 0.9}>
       <primitive object={scene} />
     </group>
   )
 }
 
 useGLTF.preload(MODEL_URL, true)
+// Warm every screen texture up front so the startup loader waits for them and
+// the later crossfades have nothing left to fetch.
+SCREEN_SEQUENCE.forEach((url) => useTexture.preload(url))
