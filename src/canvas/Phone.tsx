@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef } from 'react'
+import { useLayoutEffect, useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { useGLTF, useTexture } from '@react-three/drei'
 import {
@@ -20,10 +20,24 @@ import {
   samplePhone,
   sampleSegment,
 } from '../config/choreography'
-import { lerp } from '../lib/lerp'
+import { clamp, lerp } from '../lib/lerp'
+import { stage } from '../lib/stage'
 import { scrollState, pointerState } from '../scroll/scrollStore'
 
 const MODEL_URL = '/models/iphone.glb'
+
+/* ---- cinematic startup reveal -------------------------------------------- */
+/** Seconds the reveal takes once the loader clears. */
+const INTRO_DURATION = 2.0
+/** Beat of suspense after the loader clears before the phone rises. */
+const INTRO_DELAY = 0.15
+/** Starting pose: laid back facing the sky (negative X → reveals bottom-first),
+ *  low, and small. */
+const INTRO_ROT_X = -1.35
+const INTRO_ROT_Z = 0
+const INTRO_Y = -3.2
+const INTRO_SCALE = 0.8
+/* -------------------------------------------------------------------------- */
 
 /** Material name of the model's built-in screen mesh (the "green screen"). */
 const SCREEN_MATERIAL = '4130c6244c49c5d5712e'
@@ -132,9 +146,25 @@ export function Phone() {
   const overlayMat = useRef<MeshBasicMaterial | null>(null)
   const glareMat = useRef<ShaderMaterial | null>(null)
   const screens = useRef<Texture[]>([])
+  const introElapsed = useRef(0)
+
+  const reduceMotion = useMemo(
+    () => window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+    [],
+  )
 
   const { scene } = useGLTF(MODEL_URL, true)
   const textures = useTexture(SCREEN_SEQUENCE)
+
+  // Reduced motion: skip the cinematic reveal — snap straight to the live pose.
+  useLayoutEffect(() => {
+    if (!reduceMotion || !group.current) return
+    introElapsed.current = INTRO_DELAY + INTRO_DURATION
+    const pose = samplePhone(scrollState.progress)
+    group.current.position.set(pose.x, pose.y, 0)
+    group.current.rotation.set(0, 0, 0)
+    group.current.scale.setScalar(PHONE.scale * pose.scale)
+  }, [reduceMotion])
 
   // Green-screen: paint the app onto the model's screen mesh, plus the crossfade
   // overlay and glare layers (added once).
@@ -195,24 +225,43 @@ export function Phone() {
     }
   }, [scene, textures])
 
-  useFrame(() => {
+  useFrame((state, delta) => {
     const g = group.current
     if (!g) return
 
-    // Scroll sets the target pose; the render loop eases toward it (golden rule).
+    // Cinematic reveal: advance only once the loader clears (or immediately for
+    // reduced motion). `e` eases 0→1 from the laying-down pose into the live one.
+    if (stage.revealed || reduceMotion) introElapsed.current += delta
+    const raw = clamp((introElapsed.current - INTRO_DELAY) / INTRO_DURATION)
+    const e = reduceMotion ? 1 : 1 - Math.pow(1 - raw, 5) // easeOutQuint
+
+    // Gentle idle float (scaled in by `e` so it doesn't fight the reveal) — keeps
+    // the phone feeling like a real object hovering in space.
+    const t = state.clock.elapsedTime
+    const floatY = Math.sin(t * 0.6) * 0.07 * e
+    const floatRotX = Math.sin(t * 0.45) * 0.015 * e
+    const floatRotZ = Math.cos(t * 0.4) * 0.012 * e
+
+    // Scroll sets the live target pose; the render loop eases toward it.
     const pose = samplePhone(scrollState.progress)
+    const liveRotY = pose.rotY + pointerState.x * 0.15
+    const liveRotX = -pointerState.y * 0.1
 
-    // Eased pointer parallax layered on top of the scroll-driven rotation.
-    const rotY = pose.rotY + pointerState.x * 0.15
-    const rotX = -pointerState.y * 0.1
+    // Blend the intro pose → live pose by `e`. X stays at the live position so
+    // the phone rises in place (on the right) rather than drifting from center.
+    const tX = pose.x
+    const tY = lerp(INTRO_Y, pose.y, e) + floatY
+    const tRotX = lerp(INTRO_ROT_X, liveRotX, e) + floatRotX
+    const tRotY = lerp(0, liveRotY, e)
+    const tRotZ = lerp(INTRO_ROT_Z, 0, e) + floatRotZ
+    const tScale = PHONE.scale * lerp(INTRO_SCALE, pose.scale, e)
 
-    g.position.x = lerp(g.position.x, pose.x, 0.08)
-    g.position.y = lerp(g.position.y, pose.y, 0.08)
-    g.rotation.y = lerp(g.rotation.y, rotY, 0.07)
-    g.rotation.x = lerp(g.rotation.x, rotX, 0.07)
-
-    const targetScale = PHONE.scale * pose.scale
-    g.scale.setScalar(lerp(g.scale.x, targetScale, 0.08))
+    g.position.x = lerp(g.position.x, tX, 0.08)
+    g.position.y = lerp(g.position.y, tY, 0.08)
+    g.rotation.x = lerp(g.rotation.x, tRotX, 0.09)
+    g.rotation.y = lerp(g.rotation.y, tRotY, 0.08)
+    g.rotation.z = lerp(g.rotation.z, tRotZ, 0.09)
+    g.scale.setScalar(lerp(g.scale.x, tScale, 0.08))
 
     // Crossfade the screen: base = current section's screen, overlay = next,
     // overlay opacity = smoothstepped progress through the segment.
@@ -245,9 +294,14 @@ export function Phone() {
     }
   })
 
-  // Initial pose sits low + slightly small so it eases UP into the hero on load.
+  // Starts in the laying-down intro pose; eases upright on the loader reveal.
   return (
-    <group ref={group} position={[0, -2.8, 0]} scale={PHONE.scale * 0.9}>
+    <group
+      ref={group}
+      position={[0, INTRO_Y, 0]}
+      rotation={[INTRO_ROT_X, 0, INTRO_ROT_Z]}
+      scale={PHONE.scale * INTRO_SCALE}
+    >
       <primitive object={scene} />
     </group>
   )

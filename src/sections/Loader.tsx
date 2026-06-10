@@ -3,6 +3,7 @@ import { useProgress } from '@react-three/drei'
 
 import { AnimatedOrbitalMark } from '../branding/AnimatedOrbitalMark'
 import { BRAND, BRAND_RGB } from '../branding/colors'
+import { stage } from '../lib/stage'
 
 /**
  * Full-screen startup loader. Covers the page in near-black while the heavy
@@ -60,9 +61,11 @@ export function Loader() {
     }
   }, [])
 
-  // Fade out, then unmount.
+  // Fade out, then unmount. Signal the scene to start its reveal animation as
+  // the loader begins clearing.
   useEffect(() => {
     if (!complete) return
+    stage.revealed = true
     setLeaving(true)
     const t = setTimeout(() => setHidden(true), FADE_MS)
     return () => clearTimeout(t)
