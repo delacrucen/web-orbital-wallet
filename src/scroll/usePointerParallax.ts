@@ -13,6 +13,9 @@ export function usePointerParallax() {
     if (reduce) return
 
     const onMove = (e: PointerEvent) => {
+      // Touch parallax is driven by the gyroscope (`useDeviceTilt`); ignore
+      // pointer events synthesized from touch so the two don't fight.
+      if (e.pointerType && e.pointerType !== 'mouse') return
       pointerState.x = (e.clientX / window.innerWidth) * 2 - 1
       pointerState.y = -((e.clientY / window.innerHeight) * 2 - 1)
     }

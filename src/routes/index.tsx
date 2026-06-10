@@ -4,6 +4,7 @@ import { Background } from '../canvas/Background'
 import { Scene } from '../canvas/Scene'
 import { SmoothScroll } from '../scroll/SmoothScroll'
 import { usePointerParallax } from '../scroll/usePointerParallax'
+import { useDeviceTilt } from '../scroll/useDeviceTilt'
 import { Header } from '../sections/Header'
 import { Loader } from '../sections/Loader'
 import { Hero } from '../sections/Hero'
@@ -16,6 +17,7 @@ export const Route = createFileRoute('/')({
 
 function Landing() {
   usePointerParallax()
+  useDeviceTilt()
 
   return (
     <>
