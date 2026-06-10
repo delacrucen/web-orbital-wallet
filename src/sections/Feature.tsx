@@ -1,7 +1,9 @@
+import { useScrollReveal } from '../scroll/useScrollReveal'
+
 /**
  * A feature section. The phone (fixed canvas) slides to one side while this copy
  * sits on the opposite side — mirror tracks. `side` is the side the TEXT sits on;
- * Phase 2 wires the entrance animation driven by section scroll progress.
+ * the copy scroll-reveals in from that side as the section enters.
  */
 export interface FeatureProps {
   id: string
@@ -13,13 +15,14 @@ export interface FeatureProps {
 }
 
 export function Feature({ id, lead, emphasis, body, side }: FeatureProps) {
+  const reveal = useScrollReveal(side)
+
   return (
-    <section
-      id={id}
-      className="relative flex min-h-screen items-center"
-    >
+    <section id={id} className="relative flex min-h-screen items-center">
       <div className="mx-auto w-full max-w-6xl px-6">
         <div
+          ref={reveal}
+          style={{ opacity: 0, willChange: 'transform, opacity' }}
           className={
             side === 'right'
               ? 'ml-auto max-w-md text-right'
