@@ -53,10 +53,10 @@ export const SECTIONS: SectionKeyframe[] = [
   {
     key: "hero",
     screen: "home",
-    phoneX: 0,
-    phoneY: -0.2,
-    rotY: 0,
-    scaleMul: 1,
+    phoneX: 2.6,
+    phoneY: -0.3,
+    rotY: -0.3,
+    scaleMul: 0.9,
   },
   {
     key: "feature1",
