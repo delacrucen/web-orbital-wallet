@@ -4,6 +4,8 @@ import { Background } from '../canvas/Background'
 import { Scene } from '../canvas/Scene'
 import { SmoothScroll } from '../scroll/SmoothScroll'
 import { usePointerParallax } from '../scroll/usePointerParallax'
+import { Header } from '../sections/Header'
+import { Loader } from '../sections/Loader'
 import { Hero } from '../sections/Hero'
 import { Feature } from '../sections/Feature'
 
@@ -26,6 +28,13 @@ function Landing() {
       <div className="pointer-events-none fixed inset-0 z-10">
         <Scene />
       </div>
+
+      {/* Layer 3: fixed morphing top navigation, above every other layer. */}
+      <Header />
+
+      {/* Layer 4: startup loader — covers everything until assets are ready,
+          then fades out. Unmounts itself when done. */}
+      <Loader />
 
       {/* Layer 2: scrolling marketing copy. Transparent sections so the phone
           shows through; defines the page height. */}
