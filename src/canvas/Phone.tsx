@@ -22,7 +22,12 @@ import {
 } from '../config/choreography'
 import { clamp, lerp } from '../lib/lerp'
 import { stage } from '../lib/stage'
-import { scrollState, pointerState } from '../scroll/scrollStore'
+import {
+  scrollState,
+  pointerState,
+  layoutState,
+  pinchState,
+} from '../scroll/scrollStore'
 
 const MODEL_URL = '/models/iphone.glb'
 
@@ -160,7 +165,7 @@ export function Phone() {
   useLayoutEffect(() => {
     if (!reduceMotion || !group.current) return
     introElapsed.current = INTRO_DELAY + INTRO_DURATION
-    const pose = samplePhone(scrollState.progress)
+    const pose = samplePhone(scrollState.progress, layoutState.mobile)
     group.current.position.set(pose.x, pose.y, 0)
     group.current.rotation.set(0, 0, 0)
     group.current.scale.setScalar(PHONE.scale * pose.scale)
@@ -243,7 +248,7 @@ export function Phone() {
     const floatRotZ = Math.cos(t * 0.4) * 0.012 * e
 
     // Scroll sets the live target pose; the render loop eases toward it.
-    const pose = samplePhone(scrollState.progress)
+    const pose = samplePhone(scrollState.progress, layoutState.mobile)
     const liveRotY = pose.rotY + pointerState.x * 0.15
     const liveRotX = -pointerState.y * 0.1
 
@@ -254,7 +259,8 @@ export function Phone() {
     const tRotX = lerp(INTRO_ROT_X, liveRotX, e) + floatRotX
     const tRotY = lerp(0, liveRotY, e)
     const tRotZ = lerp(INTRO_ROT_Z, 0, e) + floatRotZ
-    const tScale = PHONE.scale * lerp(INTRO_SCALE, pose.scale, e)
+    // Pinch-to-zoom multiplies the live scale (1 on desktop / when not pinching).
+    const tScale = PHONE.scale * lerp(INTRO_SCALE, pose.scale, e) * pinchState.scale
 
     g.position.x = lerp(g.position.x, tX, 0.08)
     g.position.y = lerp(g.position.y, tY, 0.08)

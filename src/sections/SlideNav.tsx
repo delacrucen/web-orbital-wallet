@@ -16,21 +16,24 @@ export function SlideNav() {
   if (count < 2) return null
 
   return (
+    // Mobile: a horizontal dot row centered at the bottom (carousel style) —
+    // swipe drives navigation, so the chevrons are hidden. Desktop: the vertical
+    // stack with up/down chevrons, bottom-right.
     <nav
       aria-label="Section navigation"
-      className="fixed bottom-6 right-6 z-40 flex select-none flex-col items-center gap-3"
+      className="fixed bottom-5 left-1/2 z-40 flex -translate-x-1/2 select-none flex-row items-center gap-3 md:bottom-6 md:left-auto md:right-6 md:translate-x-0 md:flex-col"
     >
       <button
         type="button"
         aria-label="Previous section"
         disabled={index === 0}
         onClick={() => slideNav.goTo(index - 1)}
-        className="text-ink/40 transition-colors hover:text-ink disabled:pointer-events-none disabled:opacity-20"
+        className="hidden text-ink/40 transition-colors hover:text-ink disabled:pointer-events-none disabled:opacity-20 md:block"
       >
         <Chevron direction="up" />
       </button>
 
-      <div className="flex flex-col items-center gap-2.5">
+      <div className="flex flex-row items-center gap-2.5 md:flex-col">
         {Array.from({ length: count }).map((_, i) => (
           <button
             key={i}
@@ -52,7 +55,7 @@ export function SlideNav() {
         aria-label="Next section"
         disabled={index === count - 1}
         onClick={() => slideNav.goTo(index + 1)}
-        className="text-ink/40 transition-colors hover:text-ink disabled:pointer-events-none disabled:opacity-20"
+        className="hidden text-ink/40 transition-colors hover:text-ink disabled:pointer-events-none disabled:opacity-20 md:block"
       >
         <Chevron direction="down" />
       </button>

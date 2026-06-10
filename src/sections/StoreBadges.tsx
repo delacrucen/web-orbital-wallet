@@ -21,7 +21,7 @@ export function StoreBadges({ className = '' }: { className?: string }) {
         <img
           src={appleBadge}
           alt="Descargar en el App Store"
-          className="h-12 w-auto"
+          className="h-10 w-auto sm:h-12"
         />
       </a>
       <a
@@ -32,7 +32,7 @@ export function StoreBadges({ className = '' }: { className?: string }) {
         <img
           src={googleBadge}
           alt="Disponible en Google Play"
-          className="h-12 w-auto"
+          className="h-10 w-auto sm:h-12"
         />
       </a>
     </div>

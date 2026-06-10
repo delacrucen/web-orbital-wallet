@@ -50,8 +50,12 @@ export function Feature({ id, lead, emphasis, body, side }: FeatureProps) {
     <section
       id={id}
       data-snap
-      className="relative flex min-h-screen items-center"
+      className="relative flex min-h-svh flex-col md:flex-row md:items-center"
     >
+      {/* Mobile: reserve the upper zone for the fixed 3D phone so the copy docks
+          directly beneath it (flex-column rhythm: phone zone → text zone).
+          Desktop: no spacer — the phone sits beside the copy. */}
+      <div aria-hidden className="h-(--ow-feat-zone) shrink-0 md:hidden" />
       <div className="mx-auto w-full max-w-6xl px-6">
         <motion.div
           variants={container}
@@ -60,25 +64,25 @@ export function Feature({ id, lead, emphasis, body, side }: FeatureProps) {
           viewport={{ once: false, amount: 0.5 }}
           className={
             side === "right"
-              ? "ml-auto max-w-md text-right"
-              : "mr-auto max-w-md text-left"
+              ? "mx-auto max-w-sm text-center md:ml-auto md:mr-0 md:max-w-md md:text-right"
+              : "mx-auto max-w-sm text-center md:mr-auto md:ml-0 md:max-w-md md:text-left"
           }
         >
           <motion.p
             variants={item}
-            className="text-2xl font-medium tracking-tight text-white md:text-3xl"
+            className="text-xl font-medium tracking-tight text-white sm:text-2xl md:text-3xl"
           >
             {lead}
           </motion.p>
           <motion.h2
             variants={item}
-            className="-mt-1 bg-linear-to-r from-brand-primary to-brand-secondary bg-clip-text pb-[0.12em] font-serif text-5xl font-bold italic leading-[1.1] text-transparent md:text-6xl"
+            className="-mt-1 bg-linear-to-r from-brand-primary to-brand-secondary bg-clip-text pb-[0.12em] font-serif text-4xl font-bold italic leading-[1.1] text-transparent sm:text-5xl md:text-6xl"
           >
             {emphasis}
           </motion.h2>
           <motion.p
             variants={item}
-            className="mt-4 leading-relaxed text-white/60"
+            className="mt-3 text-sm leading-relaxed text-white/80 sm:mt-4 sm:text-base md:text-xl"
           >
             {body}
           </motion.p>

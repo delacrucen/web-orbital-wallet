@@ -84,6 +84,49 @@ export const SECTIONS: SectionKeyframe[] = [
   },
 ];
 
+/**
+ * Mobile keyframes. No room for a horizontal split on a portrait phone, so the
+ * device is centered (`phoneX: 0`) and lifted into the upper portion of the
+ * viewport (`phoneY` up) while the copy sits in the lower band — a vertical
+ * stack. The phone still rotates subtly per section for life; the gyroscope
+ * parallax adds tilt on top (mirrors the desktop cursor effect). The hero phone
+ * is a touch smaller and higher to clear the taller hero copy + store badges.
+ */
+export const SECTIONS_MOBILE: SectionKeyframe[] = [
+  {
+    key: "hero",
+    screen: "home",
+    phoneX: 0,
+    phoneY: 1.4,
+    rotY: -0.18,
+    scaleMul: 0.54,
+  },
+  {
+    key: "feature1",
+    screen: "feature1",
+    phoneX: 0,
+    phoneY: 1.15,
+    rotY: 0.26,
+    scaleMul: 0.64,
+  },
+  {
+    key: "feature2",
+    screen: "feature2",
+    phoneX: 0,
+    phoneY: 1.15,
+    rotY: -0.26,
+    scaleMul: 0.64,
+  },
+  {
+    key: "feature3",
+    screen: "feature3",
+    phoneX: 0,
+    phoneY: 1.15,
+    rotY: 0.26,
+    scaleMul: 0.64,
+  },
+];
+
 /** Screen image URLs in section order (home → feature1 → 2 → 3). */
 export const SCREEN_SEQUENCE: string[] = SECTIONS.map((s) => SCREENS[s.screen]);
 
@@ -112,11 +155,12 @@ export interface PhonePose {
  * each section and transitions briskly between — the premium feel. This sets the
  * per-frame TARGET; the render loop still eases toward it.
  */
-export function samplePhone(progress: number): PhonePose {
+export function samplePhone(progress: number, mobile = false): PhonePose {
+  const keyframes = mobile ? SECTIONS_MOBILE : SECTIONS;
   const { index, t: tRaw } = sampleSegment(progress);
   const t = tRaw * tRaw * (3 - 2 * tRaw); // smoothstep
-  const a = SECTIONS[index];
-  const b = SECTIONS[index + 1];
+  const a = keyframes[index];
+  const b = keyframes[index + 1];
   return {
     x: lerp(a.phoneX, b.phoneX, t),
     y: lerp(a.phoneY, b.phoneY, t),
