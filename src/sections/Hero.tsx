@@ -103,7 +103,7 @@ export function Hero() {
           >
             {/* Fixed-height band (no clip) so the word morphs in place. Serif
                 italic to match the feature-section emphasis type. */}
-            <div className="flex h-[1.15em] items-center whitespace-nowrap font-serif text-6xl italic leading-none text-white md:text-7xl lg:text-8xl">
+            <div className="flex h-[1.45em] items-center whitespace-nowrap font-serif text-6xl italic leading-[1.3] text-white md:text-7xl lg:text-8xl">
               <AnimatePresence mode="wait">
                 <motion.span
                   key={WORDS[index]}

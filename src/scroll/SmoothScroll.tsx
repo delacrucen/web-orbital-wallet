@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import Lenis from 'lenis'
 
 import { scrollState } from './scrollStore'
+import { slideNav } from './slideNav'
 
 /* ---- paginated "slide" navigation tunables ------------------------------- */
 /** Slide animation length (s). */
@@ -38,40 +39,62 @@ export function SmoothScroll() {
     }
     rafId = requestAnimationFrame(raf)
 
+    const sections = Array.from(
+      document.querySelectorAll<HTMLElement>('[data-snap]'),
+    )
+
+    let index = 0
+    let animating = false
+
+    slideNav.set({ count: sections.length, index: 0 })
+
+    // Section the viewport centre currently sits in (for free-scroll/touch).
+    const nearest = () => {
+      const mid = lenis.scroll + window.innerHeight / 2
+      let best = 0
+      for (let i = 0; i < sections.length; i += 1) {
+        if (sections[i].offsetTop <= mid) best = i
+      }
+      return best
+    }
+
+    // Glide to a section. Drives both wheel/arrow pagination and dot clicks.
+    const goTo = (next: number) => {
+      const target = Math.max(0, Math.min(sections.length - 1, next))
+      if (animating || target === index) return
+      index = target
+      slideNav.set({ index })
+      animating = true
+      lenis.scrollTo(sections[target], {
+        duration: SLIDE_DURATION,
+        easing: easeInOutCubic,
+        force: true, // override the stopped state (paginate mode)
+        lock: true, // can't be interrupted mid-slide
+        onComplete: () => {
+          window.setTimeout(() => {
+            animating = false
+          }, COOLDOWN_MS)
+        },
+      })
+    }
+    slideNav.registerGoTo(goTo)
+
     lenis.on('scroll', (e: { progress: number; velocity: number }) => {
       scrollState.progress = e.progress
       scrollState.velocity = e.velocity
+      if (!animating) {
+        const i = nearest()
+        if (i !== index) {
+          index = i
+          slideNav.set({ index: i })
+        }
+      }
     })
 
     let teardown = () => {}
     if (paginate) {
-      const sections = Array.from(
-        document.querySelectorAll<HTMLElement>('[data-snap]'),
-      )
-
       // Freeze free scroll; we move between sections programmatically.
       lenis.stop()
-
-      let index = 0
-      let animating = false
-
-      const goTo = (next: number) => {
-        const target = Math.max(0, Math.min(sections.length - 1, next))
-        if (animating || target === index) return
-        index = target
-        animating = true
-        lenis.scrollTo(sections[target], {
-          duration: SLIDE_DURATION,
-          easing: easeInOutCubic,
-          force: true, // override the stopped state
-          lock: true, // can't be interrupted mid-slide
-          onComplete: () => {
-            window.setTimeout(() => {
-              animating = false
-            }, COOLDOWN_MS)
-          },
-        })
-      }
 
       const onWheel = (e: WheelEvent) => {
         if (animating || Math.abs(e.deltaY) < WHEEL_THRESHOLD) return
@@ -103,6 +126,7 @@ export function SmoothScroll() {
 
     return () => {
       teardown()
+      slideNav.registerGoTo(() => {})
       cancelAnimationFrame(rafId)
       lenis.destroy()
     }

@@ -8,6 +8,7 @@ import { Header } from '../sections/Header'
 import { Loader } from '../sections/Loader'
 import { Hero } from '../sections/Hero'
 import { Feature } from '../sections/Feature'
+import { SlideNav } from '../sections/SlideNav'
 
 export const Route = createFileRoute('/')({
   component: Landing,
@@ -31,6 +32,10 @@ function Landing() {
 
       {/* Layer 3: fixed morphing top navigation, above every other layer. */}
       <Header />
+
+      {/* Slideshow indicator — dots + up/down chevrons, bottom-right. Sits below
+          the loader (z-100) so it stays hidden until the page is revealed. */}
+      <SlideNav />
 
       {/* Layer 4: startup loader — covers everything until assets are ready,
           then fades out. Unmounts itself when done. */}
