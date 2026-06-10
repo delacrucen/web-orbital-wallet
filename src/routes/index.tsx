@@ -6,6 +6,7 @@ import { SmoothScroll } from '../scroll/SmoothScroll'
 import { usePointerParallax } from '../scroll/usePointerParallax'
 import { useDeviceTilt } from '../scroll/useDeviceTilt'
 import { useMobileLayout } from '../scroll/useMobileLayout'
+import { usePinchZoom } from '../scroll/usePinchZoom'
 import { Header } from '../sections/Header'
 import { Loader } from '../sections/Loader'
 import { Hero } from '../sections/Hero'
@@ -20,6 +21,7 @@ function Landing() {
   useMobileLayout()
   usePointerParallax()
   useDeviceTilt()
+  usePinchZoom()
 
   return (
     <>
