@@ -1,0 +1,58 @@
+import { createFileRoute } from '@tanstack/react-router'
+
+import { Background } from '../canvas/Background'
+import { Scene } from '../canvas/Scene'
+import { SmoothScroll } from '../scroll/SmoothScroll'
+import { usePointerParallax } from '../scroll/usePointerParallax'
+import { Hero } from '../sections/Hero'
+import { Feature } from '../sections/Feature'
+
+export const Route = createFileRoute('/')({
+  component: Landing,
+})
+
+function Landing() {
+  usePointerParallax()
+
+  return (
+    <>
+      <SmoothScroll />
+
+      {/* Layer 0: fixed background (gradient now, starfield later). */}
+      <Background />
+
+      {/* Layer 1: one fixed, full-screen canvas. Never unmounts. Transparent
+          clear so the background shows through behind the phone. */}
+      <div className="pointer-events-none fixed inset-0 z-10">
+        <Scene />
+      </div>
+
+      {/* Layer 2: scrolling marketing copy. Transparent sections so the phone
+          shows through; defines the page height. */}
+      <main className="relative z-20">
+        <Hero />
+        <Feature
+          id="funciones"
+          lead="Transferí tu dinero"
+          emphasis="Fácilmente"
+          body="Recibí y enviá dinero vía transferencia bancaria 24/7 de forma inmediata."
+          side="right"
+        />
+        <Feature
+          id="qr"
+          lead="Paga con QR"
+          emphasis="Rápidamente"
+          body="Escaneá, confirmá y pagá de manera simple en comercios y servicios."
+          side="left"
+        />
+        <Feature
+          id="todo"
+          lead="Todo desde"
+          emphasis="Un Solo Lugar"
+          body="Pagá luz, agua, internet y más sin salir de la app."
+          side="right"
+        />
+      </main>
+    </>
+  )
+}
