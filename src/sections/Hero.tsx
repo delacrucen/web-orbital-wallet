@@ -133,8 +133,8 @@ export function Hero() {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5, duration: 0.9 }}
             >
-              Pagá, enviá y gestioná tu dinero de forma simple, rápida y segura
-              desde cualquier lugar
+              Con Orbital Wallet, pagá, enviá y gestioná tu dinero de forma
+              simple, rápida y segura desde cualquier lugar
             </motion.p>
 
             <motion.div
