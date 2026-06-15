@@ -193,6 +193,15 @@ export const SECTION_TEXTURE_INDEX: number[] = SECTIONS.map((s) =>
 );
 
 /**
+ * Whole-page progress where the hero backdrop finishes crossfading — video out,
+ * starfield in. Three-quarters into the first segment, so it settles before the
+ * first feature. It MUST scale with the section count: each segment is
+ * 1/(n-1) wide, so a hardcoded value (e.g. 0.25, tuned for 4 sections) leaves
+ * the hero video bleeding into the next section once more sections are added.
+ */
+export const HERO_BACKDROP_END = 0.75 / (SECTIONS.length - 1);
+
+/**
  * Active keyframe segment for a whole-page scroll progress (0→1): the lower
  * keyframe index and the local 0..1 progress within that segment. Shared by the
  * phone pose and the screen crossfade so they move on the same clock.

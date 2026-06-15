@@ -10,6 +10,7 @@ import {
   Vector2,
 } from "three";
 
+import { HERO_BACKDROP_END } from "../config/choreography";
 import { clamp, lerp } from "../lib/lerp";
 import { pointerState, scrollState } from "../scroll/scrollStore";
 
@@ -176,9 +177,10 @@ export function Starfield() {
     const scrollTarget = (scrollState.progress - 0.5) * SCROLL_PARALLAX;
     u.uScroll.value = lerp(u.uScroll.value, scrollTarget, 0.08);
 
-    // Fade in over the first quarter of the page (inverse of the hero video),
-    // capped at STAR_BRIGHTNESS so the stars stay a calm backdrop.
-    u.uOpacity.value = clamp(scrollState.progress / 0.25) * STAR_BRIGHTNESS;
+    // Fade in across the hero (inverse of the hero video), capped at
+    // STAR_BRIGHTNESS so the stars stay a calm backdrop.
+    u.uOpacity.value =
+      clamp(scrollState.progress / HERO_BACKDROP_END) * STAR_BRIGHTNESS;
     u.uTime.value += delta;
   });
 

@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 
 import heroVideo from "../assets/videos/hero.mp4";
 import { BRAND_RGB } from "../branding/colors";
+import { HERO_BACKDROP_END } from "../config/choreography";
 import { clamp } from "../lib/lerp";
 import { scrollState } from "../scroll/scrollStore";
 
@@ -32,8 +33,8 @@ export function Background() {
     let raf = 0;
 
     const update = () => {
-      // Fully visible at the top, gone by ~25% scroll (end of the hero).
-      const opacity = clamp(1 - scrollState.progress / 0.25);
+      // Fully visible at the top, gone by the end of the hero (first segment).
+      const opacity = clamp(1 - scrollState.progress / HERO_BACKDROP_END);
       if (fade) fade.style.opacity = String(opacity);
 
       if (video) {
