@@ -84,7 +84,7 @@ export function OrbitalPay() {
         <motion.div variants={group} className="mx-auto max-w-2xl text-center">
           <motion.span
             variants={item}
-            className="inline-block rounded-full border border-brand-primary/30 bg-brand-primary/10 px-3.5 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-brand-primary backdrop-blur-sm"
+            className="inline-block rounded-full border border-brand-primary/30 bg-brand-primary/10 px-3.5 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-white/80 backdrop-blur-sm"
           >
             Orbital Pay
           </motion.span>
@@ -99,7 +99,8 @@ export function OrbitalPay() {
             className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-white/70 md:text-base"
           >
             Tarjetas, transferencias locales y métodos alternativos — todo el
-            procesamiento de pagos de tu negocio en un solo lugar.
+            procesamiento de pagos de tu negocio en un solo lugar con Orbital
+            Pay.
           </motion.p>
         </motion.div>
 
@@ -112,7 +113,7 @@ export function OrbitalPay() {
             <motion.div
               key={title}
               variants={item}
-              className="rounded-3xl border border-brand-primary/10 p-7 backdrop-blur-3xl"
+              className="rounded-3xl p-7 border border-white/10 bg-black/50"
             >
               <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-linear-to-br from-brand-primary/25 to-brand-secondary/25 text-brand-primary">
                 <Icon className="h-5 w-5" strokeWidth={1.75} />

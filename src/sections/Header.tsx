@@ -76,7 +76,7 @@ export function Header() {
       <nav
         className={`flex w-full items-center justify-between gap-4 border transition-all duration-500 ease-out motion-reduce:transition-none ${
           scrolled
-            ? "max-w-6xl rounded-full border-white/10 bg-white/10 px-5 py-2.5 backdrop-blur-xl"
+            ? "max-w-6xl rounded-full border-white/10 bg-white/3 px-5 py-2.5 backdrop-blur-md"
             : "max-w-full rounded-4xl border-transparent bg-transparent px-4 py-1 backdrop-blur-0"
         }`}
       >
