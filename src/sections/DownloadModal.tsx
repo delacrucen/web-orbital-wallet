@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { QRCodeSVG } from "qrcode.react";
 import { X } from "lucide-react";
 
+import { downloadModal } from "../lib/downloadModal";
 import { StoreBadges } from "./StoreBadges";
 
 /**
@@ -10,14 +11,18 @@ import { StoreBadges } from "./StoreBadges";
  * route — scanning it on a phone redirects to the matching store (iOS/Android).
  * The store badges sit below as a direct alternative (e.g. on desktop, where
  * scanning your own screen isn't an option).
+ *
+ * Open state lives in the shared `downloadModal` store so any CTA (header,
+ * footer) can open this single instance. Render it once near the app root.
  */
-export function DownloadModal({
-  open,
-  onClose,
-}: {
-  open: boolean;
-  onClose: () => void;
-}) {
+export function DownloadModal() {
+  const open = useSyncExternalStore(
+    downloadModal.subscribe,
+    downloadModal.getSnapshot,
+    downloadModal.getSnapshot,
+  );
+  const onClose = downloadModal.close;
+
   // Resolve the QR target lazily on the client (needs window.location).
   const [downloadUrl, setDownloadUrl] = useState("");
   useEffect(() => {

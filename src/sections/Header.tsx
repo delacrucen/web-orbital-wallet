@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import logoUrl from "../assets/images/logos/ow-white.webp";
+import { downloadModal } from "../lib/downloadModal";
 import { slideNav } from "../scroll/slideNav";
 import { DownloadModal } from "./DownloadModal";
 
@@ -33,14 +34,15 @@ const MORPH_AT = 8;
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
-  const [downloadOpen, setDownloadOpen] = useState(false);
 
   // Nav clicks glide to the target section through the paginated engine. Anchors
   // that aren't snap sections (e.g. the footer's #contacto) fall back to the
   // browser's native hash scroll.
   const onNavClick = (e: React.MouseEvent, href: string) => {
     const id = href.slice(1);
-    const snaps = Array.from(document.querySelectorAll<HTMLElement>("[data-snap]"));
+    const snaps = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-snap]"),
+    );
     const idx = snaps.findIndex((s) => s.id === id);
     if (idx >= 0) {
       e.preventDefault();
@@ -109,17 +111,14 @@ export function Header() {
 
         <button
           type="button"
-          onClick={() => setDownloadOpen(true)}
+          onClick={() => downloadModal.open()}
           className="shrink-0 whitespace-nowrap rounded-full bg-linear-to-b from-brand-primary to-brand-secondary px-5 py-2.5 text-sm font-medium text-white shadow-lg shadow-red-900/30 transition hover:brightness-110"
         >
           Descargar App
         </button>
       </nav>
 
-      <DownloadModal
-        open={downloadOpen}
-        onClose={() => setDownloadOpen(false)}
-      />
+      <DownloadModal />
     </header>
   );
 }
