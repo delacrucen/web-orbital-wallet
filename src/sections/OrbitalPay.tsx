@@ -112,7 +112,7 @@ export function OrbitalPay() {
             <motion.div
               key={title}
               variants={item}
-              className="rounded-3xl border border-white/10 bg-white/[0.04] p-7 backdrop-blur-xl"
+              className="rounded-3xl border border-brand-primary/10 p-7 backdrop-blur-3xl"
             >
               <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-linear-to-br from-brand-primary/25 to-brand-secondary/25 text-brand-primary">
                 <Icon className="h-5 w-5" strokeWidth={1.75} />
