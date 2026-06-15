@@ -45,49 +45,58 @@ const SOCIALS: Social[] = [
 export function Footer() {
   return (
     <footer id="contacto" className="mt-16 mb-6">
-      <div className="mx-auto flex max-w-3xl flex-col items-center gap-6 rounded-3xl border border-white/10 bg-white/3 px-7 py-8 text-center backdrop-blur-md">
-        {/* Brand + tagline — jumps to the top, like the header wordmark. */}
-        <button
-          type="button"
-          onClick={() => slideNav.goTo(0)}
-          aria-label="Volver al inicio"
-          className="flex flex-col items-center gap-3 transition-opacity hover:opacity-90"
-        >
-          <img src={logoUrl} alt="Orbital Wallet" className="h-7 w-auto" />
-          <p className="max-w-xs text-sm leading-relaxed text-white/60">
-            Tu dinero en órbita. Seguro, ágil y en tu bolsillo.
-          </p>
-        </button>
+      <div className="mx-auto max-w-6xl rounded-3xl border border-white/10 bg-white/3 px-7 py-7 backdrop-blur-md">
+        {/* Top tier — centered stack on mobile, spread horizontally on desktop. */}
+        <div className="flex flex-col items-center gap-6 text-center md:flex-row md:items-center md:justify-between md:text-left">
+          {/* Brand + tagline — jumps to the top, like the header wordmark. */}
+          <button
+            type="button"
+            onClick={() => slideNav.goTo(0)}
+            aria-label="Volver al inicio"
+            className="flex flex-col items-center gap-2 transition-opacity hover:opacity-90 md:items-start"
+          >
+            <img src={logoUrl} alt="Orbital Wallet" className="h-7 w-auto" />
+            <p className="max-w-xs text-sm leading-relaxed text-white/60">
+              Tu dinero en órbita. Seguro, ágil y en tu bolsillo.
+            </p>
+          </button>
 
-        {/* Social belt. */}
-        <div className="flex items-center gap-3">
-          {SOCIALS.map((s) => (
-            <a
-              key={s.label}
-              href={s.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={s.label}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 transition-colors hover:bg-white/10 hover:text-white"
+          {/* Actions — social belt + download CTA. */}
+          <div className="flex flex-col items-center gap-5 sm:flex-row sm:gap-6">
+            <div className="flex items-center gap-3">
+              {SOCIALS.map((s) => (
+                <a
+                  key={s.label}
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={s.label}
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/70 transition-colors hover:bg-white/10 hover:text-white"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    className="h-[18px] w-[18px]"
+                    aria-hidden="true"
+                  >
+                    <path d={s.path} />
+                  </svg>
+                </a>
+              ))}
+            </div>
+
+            <button
+              type="button"
+              onClick={() => downloadModal.open()}
+              className="shrink-0 rounded-full bg-linear-to-b from-brand-primary to-brand-secondary px-6 py-2.5 text-sm font-medium text-white shadow-lg shadow-red-900/30 transition hover:brightness-110"
             >
-              <svg viewBox="0 0 24 24" fill="currentColor" className="h-[18px] w-[18px]" aria-hidden="true">
-                <path d={s.path} />
-              </svg>
-            </a>
-          ))}
+              Descargar App
+            </button>
+          </div>
         </div>
 
-        {/* Download CTA — opens the shared modal. */}
-        <button
-          type="button"
-          onClick={() => downloadModal.open()}
-          className="rounded-full bg-linear-to-b from-brand-primary to-brand-secondary px-6 py-2.5 text-sm font-medium text-white shadow-lg shadow-red-900/30 transition hover:brightness-110"
-        >
-          Descargar App
-        </button>
-
-        {/* Legal + copyright. */}
-        <div className="flex w-full flex-col items-center gap-3 border-t border-white/10 pt-5 text-center md:flex-row md:justify-between md:text-left">
+        {/* Bottom tier — copyright + legal, divided. */}
+        <div className="mt-6 flex flex-col items-center gap-3 border-t border-white/10 pt-5 text-center md:flex-row md:justify-between md:text-left">
           <p className="text-xs text-white/40">
             © 2026 Orbital Wallet. Todos los derechos reservados.
           </p>
