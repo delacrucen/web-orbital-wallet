@@ -33,7 +33,12 @@ export const PHONE = {
  * (phone left ↔ text right) so the two tracks oppose. The whole page scroll maps
  * 0→1 across these keyframes (keyframe i sits at i/(n-1)).
  */
-export type SectionKey = "hero" | "feature1" | "feature2" | "feature3";
+export type SectionKey =
+  | "hero"
+  | "feature1"
+  | "feature2"
+  | "feature3"
+  | "orbitalpay";
 
 export interface SectionKeyframe {
   key: SectionKey;
@@ -47,6 +52,9 @@ export interface SectionKeyframe {
   rotY: number;
   /** Scale multiplier on top of PHONE.scale. */
   scaleMul: number;
+  /** Phone opacity at this keyframe (default 1). Lets a section dissolve the
+      phone — e.g. Orbital Pay, where a bento grid takes the phone's place. */
+  opacity?: number;
 }
 
 export const SECTIONS: SectionKeyframe[] = [
@@ -81,6 +89,18 @@ export const SECTIONS: SectionKeyframe[] = [
     phoneY: 0,
     rotY: 0.38,
     scaleMul: 0.92,
+  },
+  {
+    // Orbital Pay is a sibling service. A bento grid takes the phone's place on
+    // the left, so the phone stays put (mirrors feature3) and simply dissolves
+    // via opacity as the section enters.
+    key: "orbitalpay",
+    screen: "feature3",
+    phoneX: -2.4,
+    phoneY: 0,
+    rotY: 0.38,
+    scaleMul: 0.92,
+    opacity: 0,
   },
 ];
 
@@ -125,10 +145,31 @@ export const SECTIONS_MOBILE: SectionKeyframe[] = [
     rotY: 0.26,
     scaleMul: 0.64,
   },
+  {
+    // Phone dissolves (opacity 0) so the bento grid owns the screen; pose mirrors
+    // the feature sections (useMobileLayout still solves its Y/scale).
+    key: "orbitalpay",
+    screen: "feature3",
+    phoneX: 0,
+    phoneY: 1.15,
+    rotY: 0.26,
+    scaleMul: 0.64,
+    opacity: 0,
+  },
 ];
 
-/** Screen image URLs in section order (home → feature1 → 2 → 3). */
-export const SCREEN_SEQUENCE: string[] = SECTIONS.map((s) => SCREENS[s.screen]);
+/** Distinct screen textures to load, in first-appearance order. Deduped so a
+    keyframe can reuse another's screen (e.g. Orbital Pay reuses feature3)
+    without passing a duplicate URL to `useTexture` — duplicates in that array
+    are a footgun that desyncs the returned texture list. */
+export const SCREEN_TEXTURES: string[] = [
+  ...new Set(SECTIONS.map((s) => SCREENS[s.screen])),
+];
+
+/** Texture index (into SCREEN_TEXTURES) shown at each section/keyframe. */
+export const SECTION_TEXTURE_INDEX: number[] = SECTIONS.map((s) =>
+  SCREEN_TEXTURES.indexOf(SCREENS[s.screen]),
+);
 
 /**
  * Active keyframe segment for a whole-page scroll progress (0→1): the lower
@@ -147,6 +188,7 @@ export interface PhonePose {
   y: number;
   rotY: number;
   scale: number;
+  opacity: number;
 }
 
 /**
@@ -166,5 +208,6 @@ export function samplePhone(progress: number, mobile = false): PhonePose {
     y: lerp(a.phoneY, b.phoneY, t),
     rotY: lerp(a.rotY, b.rotY, t),
     scale: lerp(a.scaleMul, b.scaleMul, t),
+    opacity: lerp(a.opacity ?? 1, b.opacity ?? 1, t),
   };
 }
