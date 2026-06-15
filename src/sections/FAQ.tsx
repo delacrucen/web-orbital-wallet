@@ -26,27 +26,35 @@ interface QA {
 const FAQS: QA[] = [
   {
     q: "¿Qué es Orbital Wallet?",
-    a: "Una billetera digital para pagar, enviar y gestionar tu dinero desde el teléfono, de forma simple, rápida y segura.",
+    a: "Una billetera electrónica que funciona desde una app móvil: administrás tu cuenta, consultás saldo y movimientos, transferís y pagás servicios. Algunos servicios financieros son provistos o procesados por Financiera FIC S.A.E.C.A.",
   },
   {
-    q: "¿Cómo creo mi cuenta?",
-    a: "Descargá la app, registrate con tu número de teléfono y verificá tu identidad en minutos. No necesitás ir a ninguna sucursal.",
+    q: "¿Orbital Wallet es un banco o una financiera?",
+    a: "No. Orbital Wallet es la plataforma digital que facilita el acceso a los servicios. Los servicios financieros que correspondan los presta o procesa Financiera FIC S.A.E.C.A. u otros aliados habilitados.",
   },
   {
-    q: "¿Es seguro usar Orbital Wallet?",
-    a: "Sí. Ciframos tus datos de extremo a extremo y protegemos cada operación con autenticación en tu dispositivo.",
+    q: "¿Qué necesito para registrarme?",
+    a: "Ser mayor de edad, tener documento de identidad vigente, una línea telefónica activa, un celular compatible y conexión a internet. Descargá la app desde los canales oficiales y aceptá los Términos y la Política de Privacidad.",
   },
   {
-    q: "¿Tiene algún costo?",
-    a: "Abrir y mantener tu cuenta es gratis. Solo algunas operaciones específicas pueden tener comisiones, siempre informadas antes de confirmar.",
+    q: "¿Cómo cuida Orbital Wallet mi cuenta?",
+    a: "Con PIN, contraseña, OTP, biometría, validación documental, prueba de vida, geolocalización y monitoreo antifraude. Nunca te vamos a pedir tu contraseña, PIN o código OTP fuera de los canales oficiales.",
   },
   {
-    q: "¿Qué es Orbital Pay?",
-    a: "Nuestra solución de pagos para comercios: procesamiento de tarjetas, transferencias locales y métodos alternativos en un solo lugar.",
+    q: "¿Qué hago si pierdo mi celular?",
+    a: "Contactá de inmediato a Orbital Wallet por los canales oficiales para reportarlo. Podemos bloquear, limitar o revisar el acceso a tu cuenta por seguridad.",
   },
   {
-    q: "¿En qué dispositivos funciona?",
-    a: "En teléfonos Android y iOS. Descargá la app desde Google Play o el App Store.",
+    q: "¿Puedo enviar y recibir dinero?",
+    a: "Sí, si la funcionalidad está habilitada podés hacer transferencias internas e interbancarias, sujetas a saldo disponible, límites, datos correctos del destinatario y validaciones de seguridad.",
+  },
+  {
+    q: "¿Orbital Wallet tiene costo?",
+    a: "Los costos, comisiones y condiciones económicas aplicables se informan en el Tarifario vigente, siempre antes de confirmar cada operación.",
+  },
+  {
+    q: "¿Puedo pagar servicios desde la app?",
+    a: "Sí, si está habilitado podés pagar facturas, servicios y recargas. Revisá la empresa, el identificador del servicio, el monto y el vencimiento antes de confirmar.",
   },
 ];
 
@@ -87,11 +95,8 @@ export function FAQ() {
         className="mx-auto flex w-full max-w-3xl flex-1 flex-col justify-center py-6"
       >
         <motion.div variants={item} className="text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.25em] text-brand-primary">
-            Preguntas frecuentes
-          </p>
           <h2 className="mt-3 bg-linear-to-r from-brand-primary to-brand-secondary bg-clip-text pb-[0.1em] font-serif text-3xl font-bold italic leading-[1.1] text-transparent sm:text-4xl md:text-5xl">
-            ¿Tenés dudas?
+            Preguntas frecuentes
           </h2>
         </motion.div>
 
