@@ -1,16 +1,20 @@
+import { useRef } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 
 import { Background } from '../canvas/Background'
 import { Scene } from '../canvas/Scene'
+import { StarfieldScene } from '../canvas/StarfieldScene'
 import { SmoothScroll } from '../scroll/SmoothScroll'
 import { usePointerParallax } from '../scroll/usePointerParallax'
 import { useDeviceTilt } from '../scroll/useDeviceTilt'
 import { useMobileLayout } from '../scroll/useMobileLayout'
 import { usePinchZoom } from '../scroll/usePinchZoom'
+import { usePhoneFade } from '../scroll/usePhoneFade'
 import { Header } from '../sections/Header'
 import { Loader } from '../sections/Loader'
 import { Hero } from '../sections/Hero'
 import { Feature } from '../sections/Feature'
+import { OrbitalPay } from '../sections/OrbitalPay'
 import { SlideNav } from '../sections/SlideNav'
 
 export const Route = createFileRoute('/')({
@@ -18,21 +22,35 @@ export const Route = createFileRoute('/')({
 })
 
 function Landing() {
+  const sceneRef = useRef<HTMLDivElement>(null)
+
   useMobileLayout()
   usePointerParallax()
   useDeviceTilt()
   usePinchZoom()
+  usePhoneFade(sceneRef)
 
   return (
     <>
       <SmoothScroll />
 
-      {/* Layer 0: fixed background (gradient now, starfield later). */}
+      {/* Layer 0: fixed background (hero video + gradient). */}
       <Background />
 
-      {/* Layer 1: one fixed, full-screen canvas. Never unmounts. Transparent
-          clear so the background shows through behind the phone. */}
-      <div className="pointer-events-none fixed inset-0 z-10">
+      {/* Layer 0.5: starfield canvas. Its own layer (below the phone) so the
+          phone can fade without taking the stars with it. */}
+      <div className="pointer-events-none fixed inset-0 z-0">
+        <StarfieldScene />
+      </div>
+
+      {/* Layer 1: the phone's fixed, full-screen canvas. Never unmounts.
+          Transparent clear so the background + stars show through. `usePhoneFade`
+          dissolves this layer for the Orbital Pay section. */}
+      <div
+        ref={sceneRef}
+        className="pointer-events-none fixed inset-0 z-10"
+        style={{ willChange: 'opacity' }}
+      >
         <Scene />
       </div>
 
@@ -72,6 +90,7 @@ function Landing() {
           body="Luz, agua, internet y todas tus cuentas, pagadas y al día sin salir de la app."
           side="right"
         />
+        <OrbitalPay />
       </main>
     </>
   )
