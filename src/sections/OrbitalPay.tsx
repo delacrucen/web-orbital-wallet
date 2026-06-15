@@ -84,7 +84,7 @@ export function OrbitalPay() {
         <motion.div variants={group} className="mx-auto max-w-2xl text-center">
           <motion.span
             variants={item}
-            className="inline-block rounded-full border border-brand-primary/30 bg-brand-primary/10 px-3.5 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-white/80 backdrop-blur-sm"
+            className="inline-block rounded-full border border-brand-primary/30 bg-brand-primary/10 px-3.5 py-1 text-xs font-semibold uppercase tracking-widest text-white/80 backdrop-blur-sm"
           >
             Orbital Pay
           </motion.span>
