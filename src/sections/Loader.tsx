@@ -25,6 +25,8 @@ import { stage } from '../lib/stage'
 const MIN_VISIBLE_MS = 1100
 const MAX_VISIBLE_MS = 9000
 const FADE_MS = 650
+/** Beat to dwell on a filled 100% bar before fading, so completion reads. */
+const HOLD_AT_FULL_MS = 240
 const BAR_WIDTH = 'min(300px, 60vw)'
 
 export function Loader() {
@@ -32,6 +34,7 @@ export function Loader() {
 
   const [assetsReady, setAssetsReady] = useState(false)
   const [minElapsed, setMinElapsed] = useState(false)
+  const [filled, setFilled] = useState(false)
   const [leaving, setLeaving] = useState(false)
   const [hidden, setHidden] = useState(false)
   const [reduceMotion] = useState(
@@ -45,6 +48,7 @@ export function Loader() {
   const pctRef = useRef(0)
   const completeRef = useRef(false)
   completeRef.current = complete
+  const filledRef = useRef(false)
 
   // Real asset readiness: the manager has gone idle with at least one tracked load.
   useEffect(() => {
@@ -61,15 +65,21 @@ export function Loader() {
     }
   }, [])
 
-  // Fade out, then unmount. Signal the scene to start its reveal animation as
-  // the loader begins clearing.
+  // Fade out, then unmount — but only once the bar has visibly filled to 100%
+  // (the fill rAF below flips `filled`). Hold a beat on the full bar, then
+  // signal the scene to start its reveal as the loader begins clearing.
   useEffect(() => {
-    if (!complete) return
-    stage.revealed = true
-    setLeaving(true)
-    const t = setTimeout(() => setHidden(true), FADE_MS)
-    return () => clearTimeout(t)
-  }, [complete])
+    if (!complete || !filled) return
+    const reveal = setTimeout(() => {
+      stage.revealed = true
+      setLeaving(true)
+    }, HOLD_AT_FULL_MS)
+    const done = setTimeout(() => setHidden(true), HOLD_AT_FULL_MS + FADE_MS)
+    return () => {
+      clearTimeout(reveal)
+      clearTimeout(done)
+    }
+  }, [complete, filled])
 
   // Bar fill: trickle toward 90% while loading, then ease to 100% once complete.
   // The line itself is a left→right gradient (transparent/dim start → bright,
@@ -81,6 +91,13 @@ export function Loader() {
       const factor = completeRef.current ? 0.1 : 0.025
       pctRef.current += (ceil - pctRef.current) * factor
       if (ceil - pctRef.current < 0.3) pctRef.current = ceil
+
+      // Once assets are ready AND the bar has eased all the way to 100%, flip
+      // `filled` so the fade-out can begin (gated in the effect above).
+      if (completeRef.current && pctRef.current >= 100 && !filledRef.current) {
+        filledRef.current = true
+        setFilled(true)
+      }
 
       const p = pctRef.current / 100
 
