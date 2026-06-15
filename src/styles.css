@@ -22,6 +22,15 @@ body,
   height: 100%;
 }
 
+/* Tailwind v4's Preflight drops the implicit `cursor: pointer` on buttons.
+   Restore it for every interactive element (skipping disabled ones). */
+button:not(:disabled),
+[role='button']:not(:disabled),
+a[href],
+label[for] {
+  cursor: pointer;
+}
+
 /* Mobile phone-zone heights — the spacer the copy docks beneath. Defaults here;
    `useMobileLayout` overrides them per viewport so the phone + copy stay aligned
    and balanced on any device height. */
