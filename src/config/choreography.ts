@@ -38,7 +38,8 @@ export type SectionKey =
   | "feature1"
   | "feature2"
   | "feature3"
-  | "orbitalpay";
+  | "orbitalpay"
+  | "faq";
 
 export interface SectionKeyframe {
   key: SectionKey;
@@ -102,6 +103,17 @@ export const SECTIONS: SectionKeyframe[] = [
     scaleMul: 0.92,
     opacity: 0,
   },
+  {
+    // FAQ + footer. Phone stays dissolved (like Orbital Pay); content owns the
+    // viewport and the section scrolls through to reach the footer.
+    key: "faq",
+    screen: "feature3",
+    phoneX: -2.4,
+    phoneY: 0,
+    rotY: 0.38,
+    scaleMul: 0.92,
+    opacity: 0,
+  },
 ];
 
 /**
@@ -149,6 +161,15 @@ export const SECTIONS_MOBILE: SectionKeyframe[] = [
     // Phone dissolves (opacity 0) so the bento grid owns the screen; pose mirrors
     // the feature sections (useMobileLayout still solves its Y/scale).
     key: "orbitalpay",
+    screen: "feature3",
+    phoneX: 0,
+    phoneY: 1.15,
+    rotY: 0.26,
+    scaleMul: 0.64,
+    opacity: 0,
+  },
+  {
+    key: "faq",
     screen: "feature3",
     phoneX: 0,
     phoneY: 1.15,

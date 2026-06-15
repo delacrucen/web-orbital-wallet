@@ -15,6 +15,7 @@ import { Loader } from '../sections/Loader'
 import { Hero } from '../sections/Hero'
 import { Feature } from '../sections/Feature'
 import { OrbitalPay } from '../sections/OrbitalPay'
+import { FAQ } from '../sections/FAQ'
 import { SlideNav } from '../sections/SlideNav'
 
 export const Route = createFileRoute('/')({
@@ -91,6 +92,7 @@ function Landing() {
           side="right"
         />
         <OrbitalPay />
+        <FAQ />
       </main>
     </>
   )
