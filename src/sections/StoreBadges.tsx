@@ -1,9 +1,6 @@
 import appleBadge from '../assets/images/logos/apple-download.svg'
 import googleBadge from '../assets/images/logos/google-download.png'
-
-// Wire these to the real store listings when available.
-const APP_STORE_URL = '#'
-const PLAY_STORE_URL = '#'
+import { APP_STORES } from '../config/appStores'
 
 /**
  * Official App Store + Google Play download badges, rendered at equal height.
@@ -14,7 +11,9 @@ export function StoreBadges({ className = '' }: { className?: string }) {
   return (
     <div className={`flex flex-wrap items-center gap-4 ${className}`}>
       <a
-        href={APP_STORE_URL}
+        href={APP_STORES.ios}
+        target="_blank"
+        rel="noopener noreferrer"
         aria-label="Descargar en el App Store"
         className="inline-block transition-opacity hover:opacity-90"
       >
@@ -25,7 +24,9 @@ export function StoreBadges({ className = '' }: { className?: string }) {
         />
       </a>
       <a
-        href={PLAY_STORE_URL}
+        href={APP_STORES.android}
+        target="_blank"
+        rel="noopener noreferrer"
         aria-label="Disponible en Google Play"
         className="inline-block transition-opacity hover:opacity-90"
       >
