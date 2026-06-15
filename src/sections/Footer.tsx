@@ -45,7 +45,7 @@ const SOCIALS: Social[] = [
 export function Footer() {
   return (
     <footer id="contacto" className="mt-16 mb-6">
-      <div className="mx-auto max-w-6xl rounded-3xl border border-white/10 bg-white/3 px-7 py-7 backdrop-blur-md">
+      <div className="mx-auto max-w-6xl rounded-full border border-white/10 bg-white/3 px-10 py-7 backdrop-blur-md">
         {/* Top tier — centered stack on mobile, spread horizontally on desktop. */}
         <div className="flex flex-col items-center gap-6 text-center md:flex-row md:items-center md:justify-between md:text-left">
           {/* Brand + tagline — jumps to the top, like the header wordmark. */}
@@ -96,9 +96,10 @@ export function Footer() {
         </div>
 
         {/* Bottom tier — copyright + legal, divided. */}
-        <div className="mt-6 flex flex-col items-center gap-3 border-t border-white/10 pt-5 text-center md:flex-row md:justify-between md:text-left">
+        <div className="mt-6 flex flex-col items-center gap-3 border-t border-white/5 pt-5 text-center md:flex-row md:justify-between md:text-left">
           <p className="text-xs text-white/40">
-            © 2026 Orbital Wallet. Todos los derechos reservados.
+            © {new Date().getFullYear()} Orbital Wallet. Todos los derechos
+            reservados.
           </p>
           <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-white/60">
             <a
