@@ -13,8 +13,7 @@ import { pointerState } from './scrollStore'
  * relative to the pose the user is holding when the first reading arrives, so it
  * feels neutral no matter how they hold the phone. iOS 13+ gates the sensor
  * behind a permission prompt that must fire from a user gesture, so on those
- * devices we request it on the first tap. Disabled for fine pointers (desktop)
- * and reduced-motion.
+ * devices we request it on the first tap. Disabled for fine pointers (desktop).
  */
 
 /** Degrees of tilt mapped to the full -1..1 range. Lower = more sensitive. */
@@ -26,9 +25,8 @@ type PermissionCapable = typeof DeviceOrientationEvent & {
 
 export function useDeviceTilt() {
   useEffect(() => {
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const coarse = window.matchMedia('(pointer: coarse)').matches
-    if (reduce || !coarse) return
+    if (!coarse) return
     if (typeof DeviceOrientationEvent === 'undefined') return
 
     // Captured on the first reading → defines "level" for this hold.
@@ -58,21 +56,28 @@ export function useDeviceTilt() {
     let cleanupGesture = () => {}
 
     if (typeof DOE.requestPermission === 'function') {
-      // iOS: must ask from inside a user gesture.
+      // iOS 13+: permission must be requested from inside a user gesture.
+      // We use touchstart on document (fires before SmoothScroll's touchmove
+      // preventDefault can de-privilege the gesture) and retry on each tap
+      // until we get a definitive grant or deny rather than a single shot.
+      let asking = false
       const request = () => {
+        if (attached || asking) return
+        asking = true
         DOE.requestPermission?.()
           .then((res) => {
+            asking = false
+            document.removeEventListener('touchstart', request)
             if (res === 'granted') attach()
           })
-          .catch(() => {})
+          .catch(() => {
+            asking = false
+          })
       }
-      window.addEventListener('touchend', request, { once: true })
-      window.addEventListener('click', request, { once: true })
-      cleanupGesture = () => {
-        window.removeEventListener('touchend', request)
-        window.removeEventListener('click', request)
-      }
+      document.addEventListener('touchstart', request, { passive: true })
+      cleanupGesture = () => document.removeEventListener('touchstart', request)
     } else {
+      // Android and other browsers: no permission gate, attach directly.
       attach()
     }
 

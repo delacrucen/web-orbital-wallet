@@ -5,13 +5,9 @@ import { pointerState } from './scrollStore'
 /**
  * Tracks the pointer and writes a normalized -1..1 offset into the shared store.
  * Consumers (phone, starfield) lerp toward it for an eased parallax feel.
- * Disabled when the user prefers reduced motion.
  */
 export function usePointerParallax() {
   useEffect(() => {
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    if (reduce) return
-
     const onMove = (e: PointerEvent) => {
       // Touch parallax is driven by the gyroscope (`useDeviceTilt`); ignore
       // pointer events synthesized from touch so the two don't fight.

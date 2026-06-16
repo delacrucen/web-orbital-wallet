@@ -1,4 +1,4 @@
-import { useLayoutEffect, useMemo, useRef } from 'react'
+import { useLayoutEffect, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { useGLTF, useTexture } from '@react-three/drei'
 import {
@@ -154,23 +154,8 @@ export function Phone() {
   const screens = useRef<Texture[]>([])
   const introElapsed = useRef(0)
 
-  const reduceMotion = useMemo(
-    () => window.matchMedia('(prefers-reduced-motion: reduce)').matches,
-    [],
-  )
-
   const { scene } = useGLTF(MODEL_URL, true)
   const textures = useTexture(SCREEN_TEXTURES)
-
-  // Reduced motion: skip the cinematic reveal — snap straight to the live pose.
-  useLayoutEffect(() => {
-    if (!reduceMotion || !group.current) return
-    introElapsed.current = INTRO_DELAY + INTRO_DURATION
-    const pose = samplePhone(scrollState.progress, layoutState.mobile)
-    group.current.position.set(pose.x, pose.y, 0)
-    group.current.rotation.set(0, 0, 0)
-    group.current.scale.setScalar(PHONE.scale * pose.scale)
-  }, [reduceMotion])
 
   // Green-screen: paint the app onto the model's screen mesh, plus the crossfade
   // overlay and glare layers (added once).
@@ -235,11 +220,11 @@ export function Phone() {
     const g = group.current
     if (!g) return
 
-    // Cinematic reveal: advance only once the loader clears (or immediately for
-    // reduced motion). `e` eases 0→1 from the laying-down pose into the live one.
-    if (stage.revealed || reduceMotion) introElapsed.current += delta
+    // Cinematic reveal: advance only once the loader clears.
+    // `e` eases 0→1 from the laying-down pose into the live one.
+    if (stage.revealed) introElapsed.current += delta
     const raw = clamp((introElapsed.current - INTRO_DELAY) / INTRO_DURATION)
-    const e = reduceMotion ? 1 : 1 - Math.pow(1 - raw, 5) // easeOutQuint
+    const e = 1 - Math.pow(1 - raw, 5) // easeOutQuint
 
     // Gentle idle float (scaled in by `e` so it doesn't fight the reveal) — keeps
     // the phone feeling like a real object hovering in space.

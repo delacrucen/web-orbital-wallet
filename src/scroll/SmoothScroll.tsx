@@ -37,9 +37,6 @@ const easeInOutCubic = (t: number) =>
  */
 export function SmoothScroll() {
   useEffect(() => {
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const paginate = !reduce
-
     const lenis = new Lenis({ lerp: 0.1, smoothWheel: true, syncTouch: false })
 
     let rafId = 0
@@ -160,12 +157,12 @@ export function SmoothScroll() {
       }
     })
 
-    let teardown = () => {}
-    if (paginate) {
-      // Freeze free scroll; we move between sections programmatically.
-      lenis.stop()
+    // Freeze free scroll; we move between sections programmatically.
+    lenis.stop()
 
-      const onWheel = (e: WheelEvent) => {
+    let teardown = () => {}
+
+    const onWheel = (e: WheelEvent) => {
         if (animating || Math.abs(e.deltaY) < WHEEL_THRESHOLD) return
         move(e.deltaY > 0 ? 1 : -1)
       }
@@ -215,18 +212,17 @@ export function SmoothScroll() {
         }
       }
 
-      window.addEventListener('wheel', onWheel, { passive: true })
-      window.addEventListener('touchstart', onTouchStart, { passive: true })
-      window.addEventListener('touchmove', onTouchMove, { passive: false })
-      window.addEventListener('touchend', onTouchEnd, { passive: true })
-      window.addEventListener('keydown', onKey)
-      teardown = () => {
-        window.removeEventListener('wheel', onWheel)
-        window.removeEventListener('touchstart', onTouchStart)
-        window.removeEventListener('touchmove', onTouchMove)
-        window.removeEventListener('touchend', onTouchEnd)
-        window.removeEventListener('keydown', onKey)
-      }
+    window.addEventListener('wheel', onWheel, { passive: true })
+    window.addEventListener('touchstart', onTouchStart, { passive: true })
+    window.addEventListener('touchmove', onTouchMove, { passive: false })
+    window.addEventListener('touchend', onTouchEnd, { passive: true })
+    window.addEventListener('keydown', onKey)
+    teardown = () => {
+      window.removeEventListener('wheel', onWheel)
+      window.removeEventListener('touchstart', onTouchStart)
+      window.removeEventListener('touchmove', onTouchMove)
+      window.removeEventListener('touchend', onTouchEnd)
+      window.removeEventListener('keydown', onKey)
     }
 
     return () => {

@@ -13,7 +13,7 @@ dist-ssr
 *.local
 
 # Project docs / design references (not tracked)
-docs/
+/docs/
 
 # Editor directories and files
 .vscode/*
