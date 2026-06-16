@@ -56,21 +56,28 @@ export function useDeviceTilt() {
     let cleanupGesture = () => {}
 
     if (typeof DOE.requestPermission === 'function') {
-      // iOS: must ask from inside a user gesture.
+      // iOS 13+: permission must be requested from inside a user gesture.
+      // We use touchstart on document (fires before SmoothScroll's touchmove
+      // preventDefault can de-privilege the gesture) and retry on each tap
+      // until we get a definitive grant or deny rather than a single shot.
+      let asking = false
       const request = () => {
+        if (attached || asking) return
+        asking = true
         DOE.requestPermission?.()
           .then((res) => {
+            asking = false
+            document.removeEventListener('touchstart', request)
             if (res === 'granted') attach()
           })
-          .catch(() => {})
+          .catch(() => {
+            asking = false
+          })
       }
-      window.addEventListener('touchend', request, { once: true })
-      window.addEventListener('click', request, { once: true })
-      cleanupGesture = () => {
-        window.removeEventListener('touchend', request)
-        window.removeEventListener('click', request)
-      }
+      document.addEventListener('touchstart', request, { passive: true })
+      cleanupGesture = () => document.removeEventListener('touchstart', request)
     } else {
+      // Android and other browsers: no permission gate, attach directly.
       attach()
     }
 
