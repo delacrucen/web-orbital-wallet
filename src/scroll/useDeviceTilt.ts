@@ -13,8 +13,7 @@ import { pointerState } from './scrollStore'
  * relative to the pose the user is holding when the first reading arrives, so it
  * feels neutral no matter how they hold the phone. iOS 13+ gates the sensor
  * behind a permission prompt that must fire from a user gesture, so on those
- * devices we request it on the first tap. Disabled for fine pointers (desktop)
- * and reduced-motion.
+ * devices we request it on the first tap. Disabled for fine pointers (desktop).
  */
 
 /** Degrees of tilt mapped to the full -1..1 range. Lower = more sensitive. */
@@ -26,9 +25,8 @@ type PermissionCapable = typeof DeviceOrientationEvent & {
 
 export function useDeviceTilt() {
   useEffect(() => {
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const coarse = window.matchMedia('(pointer: coarse)').matches
-    if (reduce || !coarse) return
+    if (!coarse) return
     if (typeof DeviceOrientationEvent === 'undefined') return
 
     // Captured on the first reading → defines "level" for this hold.

@@ -37,10 +37,6 @@ export function Loader() {
   const [filled, setFilled] = useState(false)
   const [leaving, setLeaving] = useState(false)
   const [hidden, setHidden] = useState(false)
-  const [reduceMotion] = useState(
-    () => window.matchMedia('(prefers-reduced-motion: reduce)').matches,
-  )
-
   const complete = assetsReady && minElapsed
 
   const fillRef = useRef<HTMLDivElement>(null)
@@ -124,7 +120,7 @@ export function Loader() {
       role="progressbar"
       aria-label="Cargando"
       aria-hidden={leaving}
-      className={`fixed inset-0 z-[100] flex flex-col items-center justify-center bg-surface transition-opacity duration-[650ms] ease-out motion-reduce:transition-none ${
+      className={`fixed inset-0 z-[100] flex flex-col items-center justify-center bg-surface transition-opacity duration-[650ms] ease-out ${
         leaving ? 'pointer-events-none opacity-0' : 'opacity-100'
       }`}
     >
@@ -138,7 +134,7 @@ export function Loader() {
 
       <AnimatedOrbitalMark
         width={132}
-        animate={!reduceMotion}
+        animate={true}
         className="relative drop-shadow-[0_0_24px_rgba(234,75,58,0.25)]"
       />
 

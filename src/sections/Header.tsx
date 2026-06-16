@@ -18,9 +18,7 @@ import { DownloadModal } from "./DownloadModal";
  * listener; every visual change is a CSS transition keyed off that flag. This
  * is deliberately *not* the pure-CSS scroll-state trick (`animation-timeline`/
  * `:has()` hacks), which is still unstable in Firefox and Safari — driving it
- * from TS gives identical behavior across every major vendor. `transition-all`
- * + `motion-reduce:transition-none` keeps it smooth while honoring
- * reduced-motion.
+ * from TS gives identical behavior across every major vendor.
  */
 
 const NAV = [
@@ -74,7 +72,7 @@ export function Header() {
       }`}
     >
       <nav
-        className={`flex w-full items-center justify-between gap-4 border transition-all duration-500 ease-out motion-reduce:transition-none ${
+        className={`flex w-full items-center justify-between gap-4 border transition-all duration-500 ease-out ${
           scrolled
             ? "max-w-6xl rounded-full border-white/10 bg-white/3 px-5 py-2.5 backdrop-blur-md"
             : "max-w-full rounded-4xl border-transparent bg-transparent px-4 py-1 backdrop-blur-0"
@@ -89,7 +87,7 @@ export function Header() {
           <img
             src={logoUrl}
             alt="Orbital Wallet"
-            className={`w-auto transition-all duration-500 ease-out motion-reduce:transition-none ${
+            className={`w-auto transition-all duration-500 ease-out ${
               scrolled ? "h-6" : "h-8"
             }`}
           />
