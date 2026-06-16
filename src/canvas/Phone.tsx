@@ -16,7 +16,8 @@ import {
 
 import {
   PHONE,
-  SCREEN_SEQUENCE,
+  SCREEN_TEXTURES,
+  SECTION_TEXTURE_INDEX,
   samplePhone,
   sampleSegment,
 } from '../config/choreography'
@@ -159,7 +160,7 @@ export function Phone() {
   )
 
   const { scene } = useGLTF(MODEL_URL, true)
-  const textures = useTexture(SCREEN_SEQUENCE)
+  const textures = useTexture(SCREEN_TEXTURES)
 
   // Reduced motion: skip the cinematic reveal — snap straight to the live pose.
   useLayoutEffect(() => {
@@ -276,8 +277,8 @@ export function Phone() {
     const om = overlayMat.current
     if (tex.length && bm && om) {
       const { index, t } = sampleSegment(scrollState.progress)
-      const a = tex[index]
-      const b = tex[index + 1]
+      const a = tex[SECTION_TEXTURE_INDEX[index]]
+      const b = tex[SECTION_TEXTURE_INDEX[index + 1]]
       if (bm.map !== a) {
         bm.map = a
         bm.needsUpdate = true
@@ -316,4 +317,4 @@ export function Phone() {
 useGLTF.preload(MODEL_URL, true)
 // Warm every screen texture up front so the startup loader waits for them and
 // the later crossfades have nothing left to fetch.
-SCREEN_SEQUENCE.forEach((url) => useTexture.preload(url))
+SCREEN_TEXTURES.forEach((url) => useTexture.preload(url))

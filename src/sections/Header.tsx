@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 
 import logoUrl from "../assets/images/logos/ow-white.webp";
+import { downloadModal } from "../lib/downloadModal";
+import { slideNav } from "../scroll/slideNav";
+import { DownloadModal } from "./DownloadModal";
 
 /**
  * Morphing top navigation.
@@ -32,6 +35,21 @@ const MORPH_AT = 8;
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
 
+  // Nav clicks glide to the target section through the paginated engine. Anchors
+  // that aren't snap sections (e.g. the footer's #contacto) fall back to the
+  // browser's native hash scroll.
+  const onNavClick = (e: React.MouseEvent, href: string) => {
+    const id = href.slice(1);
+    const snaps = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-snap]"),
+    );
+    const idx = snaps.findIndex((s) => s.id === id);
+    if (idx >= 0) {
+      e.preventDefault();
+      slideNav.goTo(idx);
+    }
+  };
+
   useEffect(() => {
     let raf = 0;
     const onScroll = () => {
@@ -58,7 +76,7 @@ export function Header() {
       <nav
         className={`flex w-full items-center justify-between gap-4 border transition-all duration-500 ease-out motion-reduce:transition-none ${
           scrolled
-            ? "max-w-6xl rounded-full border-white/10 bg-white/10 px-5 py-2.5 backdrop-blur-xl"
+            ? "max-w-6xl rounded-full border-white/10 bg-white/3 px-5 py-2.5 backdrop-blur-md"
             : "max-w-full rounded-4xl border-transparent bg-transparent px-4 py-1 backdrop-blur-0"
         }`}
       >
@@ -83,6 +101,7 @@ export function Header() {
             <a
               key={item.href}
               href={item.href}
+              onClick={(e) => onNavClick(e, item.href)}
               className="whitespace-nowrap transition hover:text-white"
             >
               {item.label}
@@ -90,10 +109,16 @@ export function Header() {
           ))}
         </div>
 
-        <button className="shrink-0 whitespace-nowrap rounded-full bg-linear-to-b from-brand-primary to-brand-secondary px-5 py-2.5 text-sm font-medium text-white shadow-lg shadow-red-900/30 transition hover:brightness-110">
+        <button
+          type="button"
+          onClick={() => downloadModal.open()}
+          className="shrink-0 whitespace-nowrap rounded-full bg-linear-to-b from-brand-primary to-brand-secondary px-5 py-2.5 text-sm font-medium text-white shadow-lg shadow-red-900/30 transition hover:brightness-110"
+        >
           Descargar App
         </button>
       </nav>
+
+      <DownloadModal />
     </header>
   );
 }

@@ -3,12 +3,12 @@ import { Canvas } from '@react-three/fiber'
 
 import { Lighting } from './Lighting'
 import { Phone } from './Phone'
-import { Starfield } from './Starfield'
 
 /**
- * The single, fixed, full-screen canvas. Never unmounts for the life of the
- * page — only the phone's transform and (later) screen texture change. Sits
- * behind the marketing copy via z-index in the page layout.
+ * The phone's fixed, full-screen canvas. Never unmounts for the life of the
+ * page — only the phone's transform and screen texture change. Sits behind the
+ * marketing copy via z-index in the page layout. The starfield is a separate
+ * canvas (StarfieldScene) so this layer can fade out (Orbital Pay) on its own.
  */
 export function Scene() {
   return (
@@ -18,10 +18,6 @@ export function Scene() {
       camera={{ position: [0, 0, 12], fov: 35 }}
       aria-hidden
     >
-      {/* Starfield sits outside Suspense — it has nothing to load and should
-          render immediately behind the phone. */}
-      <Starfield />
-
       <Suspense fallback={null}>
         <Lighting />
         <Phone />

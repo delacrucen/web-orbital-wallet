@@ -10,6 +10,7 @@ import {
   Vector2,
 } from "three";
 
+import { HERO_BACKDROP_END } from "../config/choreography";
 import { clamp, lerp } from "../lib/lerp";
 import { pointerState, scrollState } from "../scroll/scrollStore";
 
@@ -25,6 +26,11 @@ const POINTER_STRENGTH = 0.6;
 const SCROLL_PARALLAX = 50;
 /** Peak star brightness (0–1). Lower = calmer, less distracting. */
 const STAR_BRIGHTNESS = 0.3;
+/** Zen idle drift: the field endlessly traces a slow circle (depth-scaled, so
+ *  nearer stars sweep wider). Radius in world units; speed in radians/second
+ *  (≈ a full orbit every 2π/speed s — keep it slow so it reads as ambient). */
+const DRIFT_RADIUS = 0.7;
+const DRIFT_SPEED = 0.06;
 /* -------------------------------------------------------------------------- */
 
 const vertexShader = /* glsl */ `
@@ -35,6 +41,7 @@ const vertexShader = /* glsl */ `
 
   uniform float uSize;
   uniform vec2 uPointer;
+  uniform vec2 uDrift;
   uniform float uScroll;
   uniform float uTime;
 
@@ -43,10 +50,11 @@ const vertexShader = /* glsl */ `
   varying float vBright;
 
   void main() {
-    // Depth-scaled parallax: nearer stars shift more, from both pointer (xy)
-    // and scroll (y).
+    // Depth-scaled parallax: nearer stars shift more, from the pointer (xy),
+    // the page scroll (y), and a slow idle circular drift (xy).
     vec3 inst = aOffset;
     inst.xy += uPointer * aParallax;
+    inst.xy += uDrift * aParallax;
     inst.y += uScroll * aParallax;
 
     float size = uSize * aScale;
@@ -140,6 +148,7 @@ export function Starfield() {
         uniforms: {
           uSize: { value: BASE_SIZE },
           uPointer: { value: new Vector2() },
+          uDrift: { value: new Vector2() },
           uScroll: { value: 0 },
           uOpacity: { value: 0 },
           uTime: { value: 0 },
@@ -176,10 +185,15 @@ export function Starfield() {
     const scrollTarget = (scrollState.progress - 0.5) * SCROLL_PARALLAX;
     u.uScroll.value = lerp(u.uScroll.value, scrollTarget, 0.08);
 
-    // Fade in over the first quarter of the page (inverse of the hero video),
-    // capped at STAR_BRIGHTNESS so the stars stay a calm backdrop.
-    u.uOpacity.value = clamp(scrollState.progress / 0.25) * STAR_BRIGHTNESS;
+    // Fade in across the hero (inverse of the hero video), capped at
+    // STAR_BRIGHTNESS so the stars stay a calm backdrop.
+    u.uOpacity.value =
+      clamp(scrollState.progress / HERO_BACKDROP_END) * STAR_BRIGHTNESS;
     u.uTime.value += delta;
+
+    // Zen idle drift: trace a slow, endless circle.
+    const a = u.uTime.value * DRIFT_SPEED;
+    u.uDrift.value.set(Math.cos(a) * DRIFT_RADIUS, Math.sin(a) * DRIFT_RADIUS);
   });
 
   return (
