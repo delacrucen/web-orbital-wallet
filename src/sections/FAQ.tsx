@@ -85,7 +85,7 @@ export function FAQ() {
     <section
       id="faq"
       data-snap
-      className="relative flex min-h-svh flex-col px-6 pt-28"
+      className="relative flex min-h-svh flex-col px-6 pr-10 pt-28 md:pr-6"
     >
       <motion.div
         variants={group}

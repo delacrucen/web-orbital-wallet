@@ -71,7 +71,7 @@ export function OrbitalPay() {
     <section
       id="orbital-pay"
       data-snap
-      className="relative flex min-h-svh flex-col justify-center px-6 py-24 md:py-28"
+      className="relative flex min-h-svh flex-col justify-center px-6 pr-10 py-24 md:pr-6 md:py-28"
     >
       <motion.div
         variants={group}
