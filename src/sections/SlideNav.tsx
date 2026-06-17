@@ -16,24 +16,23 @@ export function SlideNav() {
   if (count < 2) return null
 
   return (
-    // Mobile: a horizontal dot row centered at the bottom (carousel style) —
-    // swipe drives navigation, so the chevrons are hidden. Desktop: the vertical
-    // stack with up/down chevrons, bottom-right.
+    // A vertical stack of "I" ticks with up/down chevrons. Mobile: pinned to the
+    // middle-right (matching the desktop side placement). Desktop: bottom-right.
     <nav
       aria-label="Section navigation"
-      className="fixed bottom-5 left-1/2 z-40 flex -translate-x-1/2 select-none flex-row items-center gap-3 md:bottom-6 md:left-auto md:right-6 md:translate-x-0 md:flex-col"
+      className="fixed right-4 top-1/2 z-40 flex -translate-y-1/2 select-none flex-col items-center gap-3 md:bottom-6 md:right-6 md:top-auto md:translate-y-0"
     >
       <button
         type="button"
         aria-label="Previous section"
         disabled={index === 0}
         onClick={() => slideNav.goTo(index - 1)}
-        className="hidden text-ink/40 transition-colors hover:text-ink disabled:pointer-events-none disabled:opacity-20 md:block"
+        className="text-ink/40 transition-colors hover:text-ink disabled:pointer-events-none disabled:opacity-20"
       >
         <Chevron direction="up" />
       </button>
 
-      <div className="flex flex-row items-center gap-2.5 md:flex-col">
+      <div className="flex flex-col items-center gap-2">
         {Array.from({ length: count }).map((_, i) => (
           <button
             key={i}
@@ -41,12 +40,16 @@ export function SlideNav() {
             aria-label={`Go to section ${i + 1}`}
             aria-current={i === index}
             onClick={() => slideNav.goTo(i)}
-            className={`h-2 w-2 rounded-full transition-all duration-300 ${
-              i === index
-                ? 'scale-125 bg-ink'
-                : 'bg-ink/25 hover:bg-ink/50'
-            }`}
-          />
+            className="group flex h-5 w-3 items-center justify-center"
+          >
+            <span
+              className={`w-1 rounded-full transition-all duration-300 ${
+                i === index
+                  ? 'h-5 bg-ink'
+                  : 'h-2.5 bg-ink/25 group-hover:bg-ink/50'
+              }`}
+            />
+          </button>
         ))}
       </div>
 
@@ -55,7 +58,7 @@ export function SlideNav() {
         aria-label="Next section"
         disabled={index === count - 1}
         onClick={() => slideNav.goTo(index + 1)}
-        className="hidden text-ink/40 transition-colors hover:text-ink disabled:pointer-events-none disabled:opacity-20 md:block"
+        className="text-ink/40 transition-colors hover:text-ink disabled:pointer-events-none disabled:opacity-20"
       >
         <Chevron direction="down" />
       </button>
