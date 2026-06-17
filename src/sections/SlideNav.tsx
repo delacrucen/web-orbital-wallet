@@ -32,7 +32,7 @@ export function SlideNav() {
         <Chevron direction="up" />
       </button>
 
-      <div className="flex flex-col items-center gap-2">
+      <div className="flex flex-col items-center gap-1">
         {Array.from({ length: count }).map((_, i) => (
           <button
             key={i}
@@ -40,13 +40,13 @@ export function SlideNav() {
             aria-label={`Go to section ${i + 1}`}
             aria-current={i === index}
             onClick={() => slideNav.goTo(i)}
-            className="group flex h-5 w-3 items-center justify-center"
+            className="group flex h-3.5 w-3 items-center justify-center"
           >
             <span
               className={`w-1 rounded-full transition-all duration-300 ${
                 i === index
-                  ? 'h-5 bg-ink'
-                  : 'h-2.5 bg-ink/25 group-hover:bg-ink/50'
+                  ? 'h-3.5 bg-ink'
+                  : 'h-1.5 bg-ink/25 group-hover:bg-ink/50'
               }`}
             />
           </button>
