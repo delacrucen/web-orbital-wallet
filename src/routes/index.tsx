@@ -1,35 +1,35 @@
-import { useRef } from 'react'
-import { createFileRoute } from '@tanstack/react-router'
+import { useRef } from "react";
+import { createFileRoute } from "@tanstack/react-router";
 
-import { Background } from '../canvas/Background'
-import { Scene } from '../canvas/Scene'
-import { StarfieldScene } from '../canvas/StarfieldScene'
-import { SmoothScroll } from '../scroll/SmoothScroll'
-import { usePointerParallax } from '../scroll/usePointerParallax'
-import { useDeviceTilt } from '../scroll/useDeviceTilt'
-import { useMobileLayout } from '../scroll/useMobileLayout'
-import { usePinchZoom } from '../scroll/usePinchZoom'
-import { usePhoneFade } from '../scroll/usePhoneFade'
-import { Header } from '../sections/Header'
-import { Loader } from '../sections/Loader'
-import { Hero } from '../sections/Hero'
-import { Feature } from '../sections/Feature'
-import { OrbitalPay } from '../sections/OrbitalPay'
-import { FAQ } from '../sections/FAQ'
-import { SlideNav } from '../sections/SlideNav'
+import { Background } from "../canvas/Background";
+import { Scene } from "../canvas/Scene";
+import { StarfieldScene } from "../canvas/StarfieldScene";
+import { SmoothScroll } from "../scroll/SmoothScroll";
+import { usePointerParallax } from "../scroll/usePointerParallax";
+import { useDeviceTilt } from "../scroll/useDeviceTilt";
+import { useMobileLayout } from "../scroll/useMobileLayout";
+import { usePinchZoom } from "../scroll/usePinchZoom";
+import { usePhoneFade } from "../scroll/usePhoneFade";
+import { Header } from "../sections/Header";
+import { Loader } from "../sections/Loader";
+import { Hero } from "../sections/Hero";
+import { Feature } from "../sections/Feature";
+import { OrbitalPay } from "../sections/OrbitalPay";
+import { FAQ } from "../sections/FAQ";
+import { SlideNav } from "../sections/SlideNav";
 
-export const Route = createFileRoute('/')({
+export const Route = createFileRoute("/")({
   component: Landing,
-})
+});
 
 function Landing() {
-  const sceneRef = useRef<HTMLDivElement>(null)
+  const sceneRef = useRef<HTMLDivElement>(null);
 
-  useMobileLayout()
-  usePointerParallax()
-  useDeviceTilt()
-  usePinchZoom()
-  usePhoneFade(sceneRef)
+  useMobileLayout();
+  usePointerParallax();
+  useDeviceTilt();
+  usePinchZoom();
+  usePhoneFade(sceneRef);
 
   return (
     <>
@@ -50,7 +50,7 @@ function Landing() {
       <div
         ref={sceneRef}
         className="pointer-events-none fixed inset-0 z-10"
-        style={{ willChange: 'opacity' }}
+        style={{ willChange: "opacity" }}
       >
         <Scene />
       </div>
@@ -74,26 +74,40 @@ function Landing() {
           id="funciones"
           lead="Mové tu dinero"
           emphasis="Sin Fricción"
-          body="Enviá y recibí transferencias bancarias al instante, los siete días, a cualquier hora."
+          body="Enviá a tus contactos, por alias o a cualquier cuenta bancaria. Al instante, los siete días, a cualquier hora."
           side="right"
+        />
+        <Feature
+          id="confirmacion"
+          lead="Cada transacción"
+          emphasis="Con Claridad"
+          body="Revisá el detalle completo de tu transacción en una sola pantalla y guardá tu comprobante cuando lo necesités."
+          side="left"
         />
         <Feature
           id="qr"
           lead="Pagá en segundos"
           emphasis="Solo Escaneá"
           body="Apuntá la cámara, confirmá el monto y listo. Pagar en comercios nunca fue tan rápido."
-          side="left"
+          side="right"
         />
         <Feature
           id="todo"
           lead="Gestioná todo desde"
           emphasis="Un Solo Lugar"
           body="Luz, agua, internet y todas tus cuentas, pagadas y al día sin salir de la app."
+          side="left"
+        />
+        <Feature
+          id="movimientos"
+          lead="Encontrá lo que buscás"
+          emphasis="En Segundos"
+          body="Filtrá tus movimientos. Tu historial completo, siempre a mano."
           side="right"
         />
         <OrbitalPay />
         <FAQ />
       </main>
     </>
-  )
+  );
 }

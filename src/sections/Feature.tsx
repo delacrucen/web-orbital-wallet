@@ -70,19 +70,19 @@ export function Feature({ id, lead, emphasis, body, side }: FeatureProps) {
         >
           <motion.p
             variants={item}
-            className="text-xl font-medium tracking-tight text-white sm:text-2xl md:text-3xl"
+            className="text-xl font-thin tracking-wide text-white sm:text-2xl md:text-3xl"
           >
             {lead}
           </motion.p>
           <motion.h2
             variants={item}
-            className="-mt-1 bg-linear-to-r from-brand-primary to-brand-secondary bg-clip-text pb-[0.12em] font-serif text-4xl font-bold italic leading-[1.1] text-transparent sm:text-5xl md:text-6xl"
+            className="-mt-1 bg-linear-to-r from-brand-primary to-brand-secondary bg-clip-text pb-[0.12em] font-serif text-5xl font-bold italic text-transparent sm:text-5xl md:text-7xl"
           >
             {emphasis}
           </motion.h2>
           <motion.p
             variants={item}
-            className="mt-3 text-sm leading-relaxed text-white/80 sm:mt-4 sm:text-base md:text-xl"
+            className="mt-3 text-sm leading-relaxed text-white/70 sm:mt-4 sm:text-base md:text-xl"
           >
             {body}
           </motion.p>

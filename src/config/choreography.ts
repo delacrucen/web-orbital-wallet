@@ -1,7 +1,9 @@
-import c0 from "../assets/images/screenshots/c0.webp";
-import c1 from "../assets/images/screenshots/c1.webp";
-import c2 from "../assets/images/screenshots/c2.webp";
-import c3 from "../assets/images/screenshots/c3.webp";
+import home from "../assets/images/screenshots/home-shown.webp";
+import contacts from "../assets/images/screenshots/contacts.webp";
+import success from "../assets/images/screenshots/success.webp";
+import qr from "../assets/images/screenshots/qr.webp";
+import services from "../assets/images/screenshots/services.webp";
+import movements from "../assets/images/screenshots/movements-filter.webp";
 
 import { clamp, lerp } from "../lib/lerp";
 
@@ -10,12 +12,14 @@ import { clamp, lerp } from "../lib/lerp";
  * keyframes live here so the whole choreography is tunable in one place.
  */
 
-/** App screens shown on the phone, in scroll order. */
+/** App screens shown on the phone, in scroll order — one per content section. */
 export const SCREENS = {
-  home: c0,
-  feature1: c1,
-  feature2: c2,
-  feature3: c3,
+  home,
+  transfer: contacts,
+  success,
+  qr,
+  services,
+  movements,
 } as const;
 
 /**
@@ -35,9 +39,11 @@ export const PHONE = {
  */
 export type SectionKey =
   | "hero"
-  | "feature1"
-  | "feature2"
-  | "feature3"
+  | "transfer"
+  | "success"
+  | "qr"
+  | "services"
+  | "movements"
   | "orbitalpay"
   | "faq";
 
@@ -68,24 +74,45 @@ export const SECTIONS: SectionKeyframe[] = [
     scaleMul: 0.9,
   },
   {
-    key: "feature1",
-    screen: "feature1",
+    // Transfer: text on the right, phone slides left.
+    key: "transfer",
+    screen: "transfer",
     phoneX: -2.4,
     phoneY: 0,
     rotY: 0.42,
     scaleMul: 0.92,
   },
   {
-    key: "feature2",
-    screen: "feature2",
+    // Transfer confirmation: text on the left, phone slides right.
+    key: "success",
+    screen: "success",
     phoneX: 2.4,
     phoneY: 0,
     rotY: -0.42,
     scaleMul: 0.92,
   },
   {
-    key: "feature3",
-    screen: "feature3",
+    // QR pay: text on the right, phone slides left.
+    key: "qr",
+    screen: "qr",
+    phoneX: -2.4,
+    phoneY: 0,
+    rotY: 0.42,
+    scaleMul: 0.92,
+  },
+  {
+    // Service payments: text on the left, phone slides right.
+    key: "services",
+    screen: "services",
+    phoneX: 2.4,
+    phoneY: 0,
+    rotY: -0.42,
+    scaleMul: 0.92,
+  },
+  {
+    // Movements/history: text on the right, phone slides left.
+    key: "movements",
+    screen: "movements",
     phoneX: -2.4,
     phoneY: 0,
     rotY: 0.38,
@@ -93,10 +120,10 @@ export const SECTIONS: SectionKeyframe[] = [
   },
   {
     // Orbital Pay is a sibling service. A bento grid takes the phone's place on
-    // the left, so the phone stays put (mirrors feature3) and simply dissolves
-    // via opacity as the section enters.
+    // the left, so the phone stays put (mirrors the movements section) and simply
+    // dissolves via opacity as the section enters.
     key: "orbitalpay",
-    screen: "feature3",
+    screen: "movements",
     phoneX: -2.4,
     phoneY: 0,
     rotY: 0.38,
@@ -107,7 +134,7 @@ export const SECTIONS: SectionKeyframe[] = [
     // FAQ + footer. Phone stays dissolved (like Orbital Pay); content owns the
     // viewport and the section scrolls through to reach the footer.
     key: "faq",
-    screen: "feature3",
+    screen: "movements",
     phoneX: -2.4,
     phoneY: 0,
     rotY: 0.38,
@@ -134,24 +161,40 @@ export const SECTIONS_MOBILE: SectionKeyframe[] = [
     scaleMul: 0.54,
   },
   {
-    key: "feature1",
-    screen: "feature1",
+    key: "transfer",
+    screen: "transfer",
     phoneX: 0,
     phoneY: 1.15,
     rotY: 0.26,
     scaleMul: 0.64,
   },
   {
-    key: "feature2",
-    screen: "feature2",
+    key: "success",
+    screen: "success",
     phoneX: 0,
     phoneY: 1.15,
     rotY: -0.26,
     scaleMul: 0.64,
   },
   {
-    key: "feature3",
-    screen: "feature3",
+    key: "qr",
+    screen: "qr",
+    phoneX: 0,
+    phoneY: 1.15,
+    rotY: 0.26,
+    scaleMul: 0.64,
+  },
+  {
+    key: "services",
+    screen: "services",
+    phoneX: 0,
+    phoneY: 1.15,
+    rotY: -0.26,
+    scaleMul: 0.64,
+  },
+  {
+    key: "movements",
+    screen: "movements",
     phoneX: 0,
     phoneY: 1.15,
     rotY: 0.26,
@@ -161,7 +204,7 @@ export const SECTIONS_MOBILE: SectionKeyframe[] = [
     // Phone dissolves (opacity 0) so the bento grid owns the screen; pose mirrors
     // the feature sections (useMobileLayout still solves its Y/scale).
     key: "orbitalpay",
-    screen: "feature3",
+    screen: "movements",
     phoneX: 0,
     phoneY: 1.15,
     rotY: 0.26,
@@ -170,7 +213,7 @@ export const SECTIONS_MOBILE: SectionKeyframe[] = [
   },
   {
     key: "faq",
-    screen: "feature3",
+    screen: "movements",
     phoneX: 0,
     phoneY: 1.15,
     rotY: 0.26,

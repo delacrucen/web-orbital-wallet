@@ -143,7 +143,7 @@ function makeGlareMaterial() {
 /**
  * The persistent phone. Loaded once, never unmounts. The app screenshots are
  * painted onto the model's own screen mesh (perfect rounded corners), kept crisp
- * (unlit). Two stacked screen layers crossfade home → feature1/2/3 across the
+ * (unlit). Two stacked screen layers crossfade one screen → the next across the
  * sections; a subtle additive glare overlay adds the premium glass feel.
  */
 export function Phone() {
