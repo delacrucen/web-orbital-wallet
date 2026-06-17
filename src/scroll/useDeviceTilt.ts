@@ -17,7 +17,7 @@ import { pointerState } from './scrollStore'
  */
 
 /** Degrees of tilt mapped to the full -1..1 range. Lower = more sensitive. */
-const TILT_RANGE = 20
+const TILT_RANGE = 10
 
 type PermissionCapable = typeof DeviceOrientationEvent & {
   requestPermission?: () => Promise<'granted' | 'denied'>
