@@ -2,16 +2,10 @@
 
 ## Contrato de prestacion de servicios de billetera electronica
 
-Version: 1.0  
-Fecha de vigencia: [completar fecha]  
-Titular de la plataforma: Orbital-Wallet [razon social completa]  
-RUC: [completar]  
-Domicilio: [completar], Republica del Paraguay  
-Canales de contacto: [correo], [telefono], [canal de soporte en la app]
+Titular de la plataforma: Orbital-Wallet  
+Domicilio: Republica del Paraguay  
 Entidad financiera aliada: Financiera FIC S.A.E.C.A.
 Servicios FIC utilizados por Orbital-Wallet: transferencias internas, transferencias interbancarias y pago de servicios.
-
-> Nota de trabajo: este documento es un borrador base y debe ser revisado por asesoria legal antes de su publicacion o aceptacion por usuarios, especialmente para confirmar el encuadre regulatorio aplicable a Orbital-Wallet como e-wallet, canal digital, mandataria o proveedor tecnologico asociado a Financiera FIC S.A.E.C.A.
 
 ## 1. Clausulas introductorias
 
@@ -25,7 +19,7 @@ Servicios FIC utilizados por Orbital-Wallet: transferencias internas, transferen
 
 ## 2. Definiciones
 
-2.1. "Orbital-Wallet": [razon social completa], sociedad constituida conforme a las leyes de la Republica del Paraguay, titular u operadora de la Aplicacion Orbital-Wallet.
+2.1. "Orbital-Wallet": sociedad constituida conforme a las leyes de la Republica del Paraguay, titular u operadora de la Aplicacion Orbital-Wallet.
 
 2.2. "Financiera FIC" o "Entidad Financiera Aliada": Financiera FIC S.A.E.C.A., entidad financiera constituida y habilitada en la Republica del Paraguay, cuyos servicios, procesos o infraestructura seran utilizados por Orbital-Wallet para habilitar transferencias internas, transferencias interbancarias y pago de servicios dentro de la Plataforma.
 
@@ -183,7 +177,7 @@ j) pagar las comisiones, cargos, gastos, tributos y penalidades aplicables.
 
 12.1. Orbital-Wallet pondra a disposicion del Usuario el historial de movimientos, comprobantes o constancias digitales de las operaciones realizadas, sujeto a disponibilidad tecnica y reglas de terceros intervinientes.
 
-12.2. El Usuario debera revisar sus movimientos y comunicar cualquier error, desconocimiento o discrepancia dentro del plazo de [15] dias corridos desde que el movimiento o comprobante se encuentre disponible en la Aplicacion, salvo que una norma imperativa establezca un plazo distinto.
+12.2. El Usuario debera revisar sus movimientos y comunicar cualquier error, desconocimiento o discrepancia dentro del plazo de 15 dias corridos desde que el movimiento o comprobante se encuentre disponible en la Aplicacion, salvo que una norma imperativa establezca un plazo distinto.
 
 12.3. Transcurrido dicho plazo sin reclamo, los movimientos se tendran por aceptados por el Usuario, sin perjuicio de correcciones posteriores por errores manifiestos, fraude, reclamos de terceros, requerimientos regulatorios o disposiciones legales.
 
@@ -285,22 +279,3 @@ g) danos indirectos, lucro cesante o perdida de oportunidad, en la medida permit
 ## Anexo I. Politica de privacidad resumida
 
 Orbital-Wallet tratara los datos personales del Usuario para identificarlo, prestar los Servicios, cumplir obligaciones legales, prevenir fraude, gestionar riesgos, procesar operaciones, atender consultas, mejorar la Plataforma y enviar comunicaciones. Los datos podran ser compartidos con proveedores, Entidades Financieras, Aliados Regulados, procesadoras, bureaus de informacion, autoridades competentes y terceros necesarios para la operacion. El Usuario podra ejercer los derechos que correspondan conforme a la normativa aplicable mediante los canales oficiales.
-
-## Anexo II. Canales de atencion
-
-Correo: [completar]  
-Telefono: [completar]  
-WhatsApp: [completar]  
-Canal de soporte en la app: [completar]  
-Horario de atencion: [completar]
-
-## Anexo III. Campos pendientes de validacion
-
-- Razon social, RUC y domicilio de Orbital-Wallet.
-- Encadre regulatorio exacto: proveedor tecnologico, mandatario, canal digital de Financiera FIC, pasarela u otro.
-- Datos contractuales de Financiera FIC y alcance exacto de transferencias internas, transferencias interbancarias y pago de servicios que prestara a Orbital-Wallet y a los Usuarios.
-- Entidades financieras adicionales, procesadoras, redes o aliados intervinientes.
-- Tarifario, limites transaccionales y plazos de reclamo.
-- Politica de privacidad completa.
-- Procedimiento de reclamos y tiempos de respuesta.
-- Textos regulatorios exigidos por BCP, SEPRELAD, defensa del consumidor u otras autoridades aplicables.

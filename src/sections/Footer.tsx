@@ -7,8 +7,7 @@ import { slideNav } from "../scroll/slideNav";
  * over the starfield, at the bottom of the last (FAQ) section so the paginated
  * scroll engine can reach it. Brand + tagline jump to the top (like the header
  * wordmark), a belt of social links, a Descargar App CTA (opens the shared
- * download modal), and legal links that open /terminos and /privacidad in a new
- * tab.
+ * download modal), and legal links that navigate to /terminos and /privacidad.
  */
 
 interface Social {
@@ -104,16 +103,12 @@ export function Footer() {
           <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-white/60">
             <a
               href="/terminos"
-              target="_blank"
-              rel="noopener noreferrer"
               className="transition-colors hover:text-white"
             >
               Términos de Servicio
             </a>
             <a
               href="/privacidad"
-              target="_blank"
-              rel="noopener noreferrer"
               className="transition-colors hover:text-white"
             >
               Política de Privacidad

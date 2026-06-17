@@ -1,11 +1,6 @@
 # Preguntas frecuentes de Orbital-Wallet
 
-Version: 1.0  
-Fecha de vigencia: [completar fecha]  
-Canales de contacto: [correo], [telefono], [WhatsApp], [canal de soporte en la app]  
 Entidad financiera aliada: Financiera FIC S.A.E.C.A.  
-
-> Nota de trabajo: borrador base inspirado en el formato de preguntas frecuentes de billeteras digitales como EKO. Debe ser revisado por asesoria legal, cumplimiento, producto y por Financiera FIC S.A.E.C.A. antes de su publicacion.
 
 ## Sobre Orbital-Wallet
 
@@ -184,13 +179,7 @@ Orbital-Wallet podra compartir datos con Financiera FIC, entidades financieras, 
 
 ### Como contacto con Orbital-Wallet?
 
-Podras comunicarte por los canales oficiales:
-
-- Correo: [completar]
-- Telefono: [completar]
-- WhatsApp: [completar]
-- Soporte en la app: [completar]
-- Horario de atencion: [completar]
+Podras comunicarte por los canales oficiales de atencion disponibles dentro de la aplicacion.
 
 ### Como hago un reclamo?
 
@@ -198,7 +187,7 @@ Contacta a soporte y envia la informacion del caso. Orbital-Wallet podra solicit
 
 ### Cuanto tiempo tengo para reclamar un movimiento?
 
-El plazo final debe ser confirmado por asesoria legal. Como referencia del borrador de Terminos y Condiciones, el usuario deberia comunicar errores, desconocimientos o discrepancias dentro de [15] dias corridos desde que el movimiento o comprobante este disponible en la app, salvo que una norma aplicable establezca otro plazo.
+Conforme a los Terminos y Condiciones, el usuario deberia comunicar errores, desconocimientos o discrepancias dentro de 15 dias corridos desde que el movimiento o comprobante este disponible en la app, salvo que una norma aplicable establezca otro plazo.
 
 ### Que hago si la app no funciona?
 
