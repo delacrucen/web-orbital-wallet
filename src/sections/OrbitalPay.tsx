@@ -1,4 +1,11 @@
-import { motion, useReducedMotion, type Variants } from "motion/react";
+import { useRef, useState } from "react";
+import {
+  motion,
+  useAnimationFrame,
+  useMotionValue,
+  useReducedMotion,
+  type Variants,
+} from "motion/react";
 import {
   BadgeCheck,
   Landmark,
@@ -15,9 +22,8 @@ import tigomoneyLogo from "../assets/images/logos/orbital-pay/tigomoney.webp";
  * Orbital Pay — the wallet's payments gateway, given equal billing to the wallet
  * feature slides. An editorial column (chip → serif title → blurb → benefit list)
  * sits beside an infinite, auto-scrolling marquee of payment-method cards that
- * fades into the dark at both edges. Deposits and the withdrawal flow share one
- * loop; each card's eyebrow names which it is (Depósito / Retiro). Retiro is bank
- * transfer, intentionally left unqualified as auto/manual.
+ * fades into the dark at both edges. Deposit methods and the bank-transfer
+ * withdrawal share one loop; each card shows its brand logo and a short blurb.
  *
  * The 3D phone canvas dissolves for this section (choreography `orbitalpay`
  * keyframe → opacity 0), so the content owns the full viewport. The section keeps
@@ -29,14 +35,13 @@ import tigomoneyLogo from "../assets/images/logos/orbital-pay/tigomoney.webp";
  * white mark, Tigo Money a self-contained blue badge), so each sits on a white
  * tile to read consistently — Personal Pay's white mark is inverted to read on it.
  *
- * The marquee is pure CSS (`ow-marquee` keyframe in styles.css over a doubled
- * track), so it adds no dependency; it pauses on hover and for reduced motion.
+ * The marquee is JS-driven (a motion value advanced per animation frame over a
+ * doubled track): it auto-scrolls, pauses on hover and for reduced motion, and
+ * can be dragged to scrub — releasing or leaving the area resumes auto-scroll.
  */
 
 interface PayMethod {
   key: string;
-  /** Uppercase eyebrow — names the flow ("Depósito" / "Retiro"). */
-  kind: string;
   name: string;
   blurb: string;
   /** Brand logo (deposit methods). Mutually exclusive with `icon`. */
@@ -50,7 +55,6 @@ interface PayMethod {
 const METHODS: PayMethod[] = [
   {
     key: "personalpay",
-    kind: "Depósito",
     name: "Personal Pay",
     blurb: "Cargá saldo al instante desde tu billetera Personal Pay.",
     logo: personalpayLogo,
@@ -58,21 +62,18 @@ const METHODS: PayMethod[] = [
   },
   {
     key: "tigomoney",
-    kind: "Depósito",
     name: "Tigo Money",
     blurb: "Depositá en segundos desde tu cuenta de Tigo Money.",
     logo: tigomoneyLogo,
   },
   {
     key: "bancard",
-    kind: "Depósito",
-    name: "Bancard",
+    name: "Red Bancard",
     blurb: "Pagá con tus tarjetas a través de la red de Bancard.",
     logo: bancardLogo,
   },
   {
     key: "transferencia",
-    kind: "Retiro",
     name: "Transferencia bancaria",
     blurb: "Pasá tu saldo a tu cuenta con una transferencia bancaria.",
     icon: Landmark,
@@ -91,39 +92,82 @@ const BENEFITS: { icon: LucideIcon; title: string }[] = [
 function MethodCard({ m }: { m: PayMethod }) {
   const Icon = m.icon;
   return (
-    <article className="relative flex w-52 shrink-0 flex-col overflow-hidden rounded-3xl border border-white/10 bg-linear-to-b from-white/[0.08] to-white/[0.015] p-5">
-      {/* Soft brand glow up top to make the card feel alive. */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -top-12 left-1/2 h-28 w-28 -translate-x-1/2 rounded-full bg-brand-primary/25 blur-2xl"
-      />
-      <div className="relative flex h-14 items-center justify-center rounded-2xl bg-white px-3 shadow-lg shadow-black/30">
+    <article className="relative flex w-72 shrink-0 flex-col overflow-hidden rounded-[1.75rem] border border-white/10 bg-linear-to-b from-white/5 to-white/3 p-7">
+      <div className="relative flex h-20 items-center justify-center rounded-2xl bg-white px-5 shadow-lg shadow-black/30">
         {m.logo ? (
           <img
             src={m.logo}
             alt={m.name}
             draggable={false}
-            className={`max-h-7 w-full object-contain${m.invert ? " invert" : ""}`}
+            className={`max-h-8 max-w-[80%] object-contain${m.invert ? " invert" : ""}`}
           />
         ) : Icon ? (
-          <Icon className="h-7 w-7 text-surface" strokeWidth={1.75} />
+          <Icon className="h-10 w-10 text-surface" strokeWidth={1.75} />
         ) : null}
       </div>
-      <p className="relative mt-5 text-[0.65rem] font-semibold uppercase tracking-widest text-brand-primary/90">
-        {m.kind}
-      </p>
-      <h3 className="relative mt-1 font-serif text-xl font-bold italic text-white">
-        {m.name}
+      {/* Each word stacks on its own line (e.g. "Transferencia" / "bancaria");
+          min-height reserves two lines so single-word cards stay aligned. */}
+      <h3 className="relative mt-6 flex min-h-[2.1em] flex-col justify-start bg-linear-to-r from-brand-primary to-brand-secondary bg-clip-text pb-[0.12em] font-serif text-2xl font-bold italic leading-[1.05] text-transparent">
+        {m.name.split(" ").map((word) => (
+          <span key={word}>{word}</span>
+        ))}
       </h3>
-      <p className="relative mt-1.5 text-xs leading-relaxed text-white/55">
+      <p className="relative mt-2 text-sm leading-relaxed text-white/55">
         {m.blurb}
       </p>
     </article>
   );
 }
 
+/** Gap between cards (Tailwind `gap-6` = 1.5rem) — used to size the loop unit. */
+const CARD_GAP = 24;
+/** Pixels per millisecond the marquee auto-advances (one set crosses in ~24s). */
+const MARQUEE_MS = 24_000;
+
 export function OrbitalPay() {
   const reduce = useReducedMotion();
+
+  // The marquee is JS-driven (instead of a CSS animation) so a pointer drag can
+  // scrub the track and auto-scroll resumes once the cursor leaves the area.
+  const trackRef = useRef<HTMLDivElement>(null);
+  const x = useMotionValue(0);
+  const [hovering, setHovering] = useState(false);
+  const dragging = useRef(false);
+  const start = useRef({ pointer: 0, value: 0 });
+
+  // Width of one card set (+ its trailing gap) — the distance after which the
+  // doubled track loops seamlessly. Read live so it survives layout changes.
+  const halfWidth = () => {
+    const el = trackRef.current;
+    return el ? (el.scrollWidth + CARD_GAP) / 2 : 0;
+  };
+
+  // Keep x within [-half, 0) so translating the doubled track never reveals an
+  // edge, whichever direction the drag goes.
+  const wrap = (value: number, half: number) =>
+    half ? (((value % half) + half) % half) - half : value;
+
+  useAnimationFrame((_, delta) => {
+    if (reduce || hovering || dragging.current) return;
+    const half = halfWidth();
+    if (!half) return;
+    x.set(wrap(x.get() - (half / MARQUEE_MS) * delta, half));
+  });
+
+  const onPointerDown = (e: React.PointerEvent) => {
+    dragging.current = true;
+    start.current = { pointer: e.clientX, value: x.get() };
+  };
+  const onPointerMove = (e: React.PointerEvent) => {
+    if (!dragging.current) return;
+    const delta = e.clientX - start.current.pointer;
+    x.set(wrap(start.current.value + delta, halfWidth()));
+  };
+  // Leaving the area both ends any drag and clears hover, so auto-scroll resumes.
+  const onPointerLeave = () => {
+    dragging.current = false;
+    setHovering(false);
+  };
 
   // Shared stagger container — cascades chip → title → blurb → benefits, with the
   // marquee as a sibling item.
@@ -201,17 +245,23 @@ export function OrbitalPay() {
           </div>
         </div>
 
-        {/* Infinite auto-scrolling method marquee, faded into the dark at both
-            edges. Hover (or reduced motion) pauses it. */}
+        {/* Infinite method marquee, faded into the dark at both edges. It
+            auto-scrolls, pauses while hovered or dragged, and can be dragged to
+            scrub — releasing or leaving the area resumes the auto-scroll. */}
         <motion.div
           variants={item}
-          className="group relative overflow-hidden py-2 [mask-image:linear-gradient(to_right,transparent,#000_8%,#000_92%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,#000_8%,#000_92%,transparent)]"
+          onPointerEnter={() => setHovering(true)}
+          onPointerLeave={onPointerLeave}
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={() => (dragging.current = false)}
+          className="relative cursor-grab touch-pan-y select-none overflow-hidden py-2 active:cursor-grabbing [mask-image:linear-gradient(to_right,transparent,#000_8%,#000_92%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,#000_8%,#000_92%,transparent)]"
         >
-          <div className="flex w-max gap-4 animate-[ow-marquee_24s_linear_infinite] group-hover:[animation-play-state:paused] motion-reduce:animate-none">
+          <motion.div ref={trackRef} style={{ x }} className="flex w-max gap-6">
             {track.map((m, i) => (
               <MethodCard key={`${m.key}-${i}`} m={m} />
             ))}
-          </div>
+          </motion.div>
         </motion.div>
       </motion.div>
     </section>

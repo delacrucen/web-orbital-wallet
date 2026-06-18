@@ -60,15 +60,3 @@ body {
   color: var(--color-ink);
   font-family: var(--font-sans);
 }
-
-/* Orbital Pay — infinite payment-method marquee. The track holds two copies of
-   the card set, so sliding it left by exactly half its width loops seamlessly.
-   Driven via `animate-[ow-marquee_…]`; paused on hover and for reduced motion. */
-@keyframes ow-marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
