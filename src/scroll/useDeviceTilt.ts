@@ -9,7 +9,8 @@ import { pointerState } from './scrollStore'
  * the phone's rotation + glass glare respond to physically tilting the handset
  * exactly like they respond to the mouse on desktop.
  *
- * `gamma` (left-right tilt) → x, `beta` (front-back tilt) → y. Both are measured
+ * Only `gamma` (left-right tilt) → x; the vertical axis is left neutral so the
+ * phone reacts to side-to-side tilt but not front-back. `gamma` is measured
  * relative to the pose the user is holding when the first reading arrives, so it
  * feels neutral no matter how they hold the phone. iOS 13+ gates the sensor
  * behind a permission prompt that must fire from a user gesture, so on those
@@ -30,19 +31,18 @@ export function useDeviceTilt() {
     if (typeof DeviceOrientationEvent === 'undefined') return
 
     // Captured on the first reading → defines "level" for this hold.
-    let baseBeta: number | null = null
     let baseGamma: number | null = null
 
     const onOrient = (e: DeviceOrientationEvent) => {
-      const { beta, gamma } = e
-      if (beta == null || gamma == null) return
-      if (baseBeta == null || baseGamma == null) {
-        baseBeta = beta
+      const { gamma } = e
+      if (gamma == null) return
+      if (baseGamma == null) {
         baseGamma = gamma
         return
       }
+      // Left-right tilt only; leave y neutral so front-back tilt does nothing.
       pointerState.x = clamp((gamma - baseGamma) / TILT_RANGE, -1, 1)
-      pointerState.y = clamp(-(beta - baseBeta) / TILT_RANGE, -1, 1)
+      pointerState.y = 0
     }
 
     let attached = false
