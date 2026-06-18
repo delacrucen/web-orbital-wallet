@@ -1,7 +1,8 @@
 locals {
-  name        = "web-orbital-wallet"
-  environment = "prod"
-  bucket_name = "web-orbital-wallet-prod-${var.target_account_id}"
+  name          = "web-orbital-wallet"
+  environment   = "prod"
+  bucket_name   = "web-orbital-wallet-prod-${var.target_account_id}"
+  custom_domain = "wallet.orbitalsolutions.dev"
 
   tags = {
     Project     = "web-orbital-wallet"

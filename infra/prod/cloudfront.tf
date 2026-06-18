@@ -19,6 +19,7 @@ resource "aws_cloudfront_distribution" "app" {
   comment             = "web-orbital-wallet prod"
   default_root_object = "index.html"
   price_class         = "PriceClass_100"
+  aliases             = [local.custom_domain]
 
   origin {
     domain_name              = aws_s3_bucket.app.bucket_regional_domain_name
@@ -64,7 +65,9 @@ resource "aws_cloudfront_distribution" "app" {
   }
 
   viewer_certificate {
-    cloudfront_default_certificate = true
+    acm_certificate_arn      = aws_acm_certificate_validation.app.certificate_arn
+    minimum_protocol_version = "TLSv1.2_2021"
+    ssl_support_method       = "sni-only"
   }
 
   tags = local.tags

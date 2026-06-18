@@ -27,6 +27,7 @@ env:
   TARGET_ROLE_ARN: arn:aws:iam::373317458963:role/WebOrbitalWalletProdDeployRole
   S3_BUCKET: web-orbital-wallet-prod-373317458963
   TARGET_CLOUDFRONT_DISTRIBUTION_ID: ${{ vars.TARGET_CLOUDFRONT_DISTRIBUTION_ID }}
+  CUSTOM_DOMAIN: wallet.orbitalsolutions.dev
 
 jobs:
   deploy:
@@ -125,6 +126,7 @@ jobs:
           set -euo pipefail
           test -n "$S3_BUCKET"
           test -n "$TARGET_CLOUDFRONT_DISTRIBUTION_ID"
+          test -n "$CUSTOM_DOMAIN"
           aws s3api head-bucket --bucket "$S3_BUCKET"
           aws cloudfront get-distribution --id "$TARGET_CLOUDFRONT_DISTRIBUTION_ID" --query 'Distribution.Status' --output text
 
@@ -155,3 +157,30 @@ jobs:
           aws cloudfront create-invalidation \
             --distribution-id "$TARGET_CLOUDFRONT_DISTRIBUTION_ID" \
             --paths "/*"
+
+      - name: Validate custom domain routing
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import os
+          import sys
+          import time
+          import urllib.request
+
+          url = f"https://{os.environ['CUSTOM_DOMAIN']}/"
+          last_error = None
+          for _ in range(20):
+              try:
+                  request = urllib.request.Request(url, method='GET')
+                  with urllib.request.urlopen(request, timeout=10) as response:
+                      content_type = response.headers.get('content-type', '')
+                      if response.status == 200 and 'text/html' in content_type:
+                          sys.exit(0)
+                      last_error = f"unexpected response: {response.status} {content_type}"
+              except Exception as error:
+                  last_error = str(error)
+              time.sleep(15)
+          print(f"Custom domain did not return HTML at {url}: {last_error}", file=sys.stderr)
+          sys.exit(1)
+          PY
