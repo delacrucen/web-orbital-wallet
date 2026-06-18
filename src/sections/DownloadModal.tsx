@@ -54,7 +54,7 @@ export function DownloadModal() {
             type="button"
             aria-label="Cerrar"
             onClick={onClose}
-            className="absolute inset-0 cursor-default bg-black/70 backdrop-blur-sm"
+            className="absolute inset-0 cursor-default! bg-black/70 backdrop-blur-sm"
           />
 
           {/* Card */}
