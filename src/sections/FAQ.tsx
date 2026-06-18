@@ -95,7 +95,7 @@ export function FAQ() {
         className="mx-auto flex w-full max-w-3xl flex-1 flex-col justify-center py-6"
       >
         <motion.div variants={item} className="text-center">
-          <h2 className="mt-3 bg-linear-to-r from-brand-primary to-brand-secondary bg-clip-text pb-[0.1em] font-serif text-3xl font-bold italic leading-[1.1] text-transparent sm:text-4xl md:text-5xl">
+          <h2 className="mt-3 bg-linear-to-r from-brand-primary to-brand-secondary bg-clip-text pb-[0.12em] font-serif text-5xl font-bold italic leading-[1.05] text-transparent sm:text-5xl md:text-7xl">
             Preguntas frecuentes
           </h2>
         </motion.div>

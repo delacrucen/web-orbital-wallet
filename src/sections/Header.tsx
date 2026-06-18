@@ -22,7 +22,8 @@ import { DownloadModal } from "./DownloadModal";
  */
 
 const NAV = [
-  { label: "Funciones", href: "#funciones" },
+  { label: "Características", href: "#funciones" },
+  { label: "Pagos", href: "#orbital-pay" },
   { label: "Preguntas Frecuentes", href: "#faq" },
   { label: "Contacto", href: "#contacto" },
 ];

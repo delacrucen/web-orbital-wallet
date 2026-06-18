@@ -70,7 +70,7 @@ export function Feature({ id, lead, emphasis, body, side }: FeatureProps) {
         >
           <motion.p
             variants={item}
-            className="text-xl font-thin tracking-wide text-white sm:text-2xl md:text-3xl"
+            className="text-xl font-thin tracking-wide text-white sm:text-2xl md:text-3xl pb-2"
           >
             {lead}
           </motion.p>
