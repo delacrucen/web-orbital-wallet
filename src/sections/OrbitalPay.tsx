@@ -81,46 +81,46 @@ const METHODS: PayMethod[] = [
 ];
 
 const BENEFITS: { icon: LucideIcon; title: string }[] = [
-  { icon: Zap, title: "Operaciones acreditadas en segundos." },
+  { icon: Zap, title: "Operaciones acreditadas en segundos" },
   {
     icon: BadgeCheck,
-    title: "Medios locales integrados en una sola pasarela.",
+    title: "Medios locales integrados en una sola pasarela",
   },
-  { icon: ShieldCheck, title: "Transferencias seguras directo a cuenta." },
+  { icon: ShieldCheck, title: "Transferencias seguras directo a cuenta" },
 ];
 
 function MethodCard({ m }: { m: PayMethod }) {
   const Icon = m.icon;
   return (
-    <article className="relative flex w-72 shrink-0 flex-col overflow-hidden rounded-[1.75rem] border border-white/10 bg-linear-to-b from-white/5 to-white/3 p-7">
-      <div className="relative flex h-20 items-center justify-center rounded-2xl bg-white px-5 shadow-lg shadow-black/30">
+    <article className="relative flex w-80 shrink-0 flex-col overflow-hidden rounded-[2rem] border border-white/5 bg-linear-to-b from-white/5 to-white/3 p-8">
+      <div className="relative flex h-24 items-center justify-center rounded-2xl bg-white/85 px-6 shadow-lg shadow-black/30 backdrop-blur-md">
         {m.logo ? (
           <img
             src={m.logo}
             alt={m.name}
             draggable={false}
-            className={`max-h-8 max-w-[80%] object-contain${m.invert ? " invert" : ""}`}
+            className={`max-h-10 max-w-[80%] object-contain opacity-80${m.invert ? " invert" : ""}`}
           />
         ) : Icon ? (
-          <Icon className="h-10 w-10 text-surface" strokeWidth={1.75} />
+          <Icon className="h-12 w-12 text-surface" strokeWidth={1.75} />
         ) : null}
       </div>
       {/* Each word stacks on its own line (e.g. "Transferencia" / "bancaria");
           min-height reserves two lines so single-word cards stay aligned. */}
-      <h3 className="relative mt-6 flex min-h-[2.1em] flex-col justify-start bg-linear-to-r from-brand-primary to-brand-secondary bg-clip-text pb-[0.12em] font-serif text-2xl font-bold italic leading-[1.05] text-transparent">
+      <h3 className="relative mt-7 flex min-h-[2.1em] flex-col justify-start bg-linear-to-r from-brand-primary to-brand-secondary bg-clip-text pb-[0.12em] font-serif text-3xl font-bold italic leading-[1.05] text-transparent">
         {m.name.split(" ").map((word) => (
           <span key={word}>{word}</span>
         ))}
       </h3>
-      <p className="relative mt-2 text-sm leading-relaxed text-white/55">
+      <p className="relative mt-3 text-base leading-relaxed text-white/55">
         {m.blurb}
       </p>
     </article>
   );
 }
 
-/** Gap between cards (Tailwind `gap-6` = 1.5rem) — used to size the loop unit. */
-const CARD_GAP = 24;
+/** Gap between cards (Tailwind `gap-8` = 2rem) — used to size the loop unit. */
+const CARD_GAP = 32;
 /** Pixels per millisecond the marquee auto-advances (one set crosses in ~24s). */
 const MARQUEE_MS = 24_000;
 
@@ -255,9 +255,9 @@ export function OrbitalPay() {
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
           onPointerUp={() => (dragging.current = false)}
-          className="relative cursor-grab touch-pan-y select-none overflow-hidden py-2 active:cursor-grabbing [mask-image:linear-gradient(to_right,transparent,#000_8%,#000_92%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,#000_8%,#000_92%,transparent)]"
+          className="ow-edge-fade relative cursor-grab touch-pan-y select-none overflow-hidden py-2 active:cursor-grabbing"
         >
-          <motion.div ref={trackRef} style={{ x }} className="flex w-max gap-6">
+          <motion.div ref={trackRef} style={{ x }} className="flex w-max gap-8">
             {track.map((m, i) => (
               <MethodCard key={`${m.key}-${i}`} m={m} />
             ))}
