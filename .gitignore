@@ -12,6 +12,13 @@ dist
 dist-ssr
 *.local
 
+# Terraform local state
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+
 # Project docs / design references (not tracked)
 /docs/
 

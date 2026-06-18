@@ -1,9 +1,0 @@
-[build]
-  command = "bun run build"
-  publish = "dist"
-
-# SPA fallback for client-side routing (TanStack Router)
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
